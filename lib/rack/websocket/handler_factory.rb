@@ -2,15 +2,17 @@ module Rack
   module WebSocket
     class HandlerFactory
 
-      def self.build(connection, data, secure = false, debug = false)
-        data.rewind
-        remains = data['rack.input'].read
+      def self.build(connection, data, debug = false)
+        request = Rack::Request.new(data)
 
-        unless data["REQUEST_METHOD"] == "GET"
+        request.env['rack.input'].rewind
+        remains = request.env['rack.input'].read
+
+        unless request.get?
           raise HandshakeError, "Must be GET request"
         end
 
-        version = data['HTTP_SEC_WEBSOCKET_KEY1'] ? 76 : 75
+        version = request.env['HTTP_SEC_WEBSOCKET_KEY1'] ? 76 : 75
         case version
         when 75
           if !remains.empty?
@@ -23,31 +25,31 @@ module Rack
           elsif remains.length > 8
             raise HandshakeError, "Extra bytes after third key"
           end
-          data['HTTP_THIRD_KEY'] = remains
+          request.env['HTTP_THIRD_KEY'] = remains
         else
           raise WebSocketError, "Must not happen"
         end
 
-        unless data['HTTP_CONNECTION'] == 'Upgrade' and data['HTTP_UPGRADE'] == 'WebSocket'
+        unless request.env['HTTP_CONNECTION'] == 'Upgrade' and request.env['HTTP_UPGRADE'] == 'WebSocket'
           raise HandshakeError, "Connection and Upgrade headers required"
         end
 
         # transform headers
-        protocol = (secure ? "wss" : "ws")
-        data['Host'] = Addressable::URI.parse("#{protocol}://"+data['Host'])
+        protocol = (request.scheme == 'https' ? "wss" : "ws")
+        request.env['Host'] = Addressable::URI.parse("#{protocol}://"+request.env['Host'])
 
-        if version = data['HTTP_SEC_WEBSOCKET_DRAFT']
+        if version = request.env['HTTP_SEC_WEBSOCKET_DRAFT']
           if version == '1' || version == '2' || version == '3'
             # We'll use handler03 - I believe they're all compatible
-            Handler03.new(connection, data, debug)
+            Handler03.new(connection, request, debug)
           else
             # According to spec should abort the connection
             raise WebSocketError, "Unknown draft version: #{version}"
           end
-        elsif data['HTTP_SEC_WEBSOCKET_KEY1']
-          Handler76.new(connection, data, debug)
+        elsif request.env['HTTP_SEC_WEBSOCKET_KEY1']
+          Handler76.new(connection, request, debug)
         else
-          Handler75.new(connection, data, debug)
+          Handler75.new(connection, request, debug)
         end
       end
     end
