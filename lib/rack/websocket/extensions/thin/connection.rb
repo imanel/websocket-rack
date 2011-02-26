@@ -40,8 +40,11 @@ module Rack
           end
 
           def unbind_with_websocket
-            self.websocket.unbind if self.websocket?
-            unbind_without_websocket
+            if self.websocket?
+              self.websocket.unbind
+            else
+              unbind_without_websocket
+            end
           end
 
           def receive_data_with_flash_policy_file(data)

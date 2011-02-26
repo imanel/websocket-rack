@@ -2,34 +2,35 @@ require 'addressable/uri'
 
 module Rack
   module WebSocket
-    class Connection < EventMachine::Connection
+    class Connection
       include Debugger
 
-      # define WebSocket callbacks
-      def onopen(&blk);     @onopen = blk;    end
-      def onclose(&blk);    @onclose = blk;   end
-      def onerror(&blk);    @onerror = blk;   end
-      def onmessage(&blk);  @onmessage = blk; end
-
-      def trigger_on_message(msg)
-        @onmessage.call(msg) if @onmessage
-      end
-      def trigger_on_open
-        @onopen.call if @onopen
-      end
-      def trigger_on_close
-        @onclose.call if @onclose
-      end
-
-      def initialize(options)
+      def initialize(app, socket, options)
+        @app = app
+        @socket = socket
         @options = options
         @debug = options[:debug] || false
-        @secure = options[:secure] || false
-        @tls_options = options[:tls_options] || {}
-        @request = {}
-        @data = ''
+
+        socket.websocket = self
 
         debug [:initialize]
+      end
+
+      def trigger_on_message(msg)
+        @app.on_message(msg)
+      end
+      def trigger_on_open
+        @app.on_open
+      end
+      def trigger_on_close
+        @app.on_close
+      end
+      def trigger_on_error(error)
+        @app.on_error(error)
+      end
+
+      def method_missing(sym, *args, &block)
+        @socket.send sym, *args, &block
       end
 
       # Use this method to close the websocket connection cleanly
@@ -42,10 +43,6 @@ module Rack
           # The handshake hasn't completed - should be safe to terminate
           close_connection
         end
-      end
-
-      def post_init
-        start_tls(@tls_options) if @secure
       end
 
       def receive_data(data)
@@ -89,7 +86,7 @@ module Rack
       end
 
       def process_bad_request(reason)
-        @onerror.call(reason) if @onerror
+        trigger_on_error(reason)
         send_data "HTTP/1.1 400 Bad request\r\n\r\n"
         close_connection_after_writing
       end
@@ -116,7 +113,7 @@ module Rack
       end
 
       def close_with_error(message)
-        @onerror.call(message) if @onerror
+        trigger_on_error(message)
         close_connection_after_writing
       end
 
