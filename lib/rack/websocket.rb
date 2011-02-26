@@ -3,6 +3,10 @@ module Rack
     VERSION = "0.0.1"
     ROOT_PATH = ::File.expand_path(::File.dirname(__FILE__))
 
+    class WebSocketError < RuntimeError; end
+    class HandshakeError < WebSocketError; end
+    class DataError < WebSocketError; end
+
     autoload :Application,    "#{ROOT_PATH}/websocket/application"
     autoload :Client,         "#{ROOT_PATH}/websocket/client"
     autoload :Connection,     "#{ROOT_PATH}/websocket/connection"
