@@ -5,9 +5,9 @@ module Rack
     module Handshake76
       def handshake
         challenge_response = solve_challenge(
-          request['HTTP_SEC_WEBSOCKET_KEY1'],
-          request['HTTP_SEC_WEBSOCKET_KEY2'],
-          request['HTTP_THIRD-KEY']
+          request.env['HTTP_SEC_WEBSOCKET_KEY1'],
+          request.env['HTTP_SEC_WEBSOCKET_KEY2'],
+          request.env['HTTP_THIRD_KEY']
         )
 
         location  = "#{request.env['rack.url_scheme']}://#{request.host}"
@@ -19,7 +19,7 @@ module Rack
         upgrade << "Connection: Upgrade\r\n"
         upgrade << "Sec-WebSocket-Location: #{location}\r\n"
         upgrade << "Sec-WebSocket-Origin: #{request.env['HTTP_ORIGIN']}\r\n"
-        if protocol = request['HTTP_SEC_WEBSOCKET_PROTOCOL']
+        if protocol = request.env['HTTP_SEC_WEBSOCKET_PROTOCOL']
           validate_protocol!(protocol)
           upgrade << "Sec-WebSocket-Protocol: #{protocol}\r\n"
         end

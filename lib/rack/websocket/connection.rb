@@ -5,7 +5,7 @@ module Rack
     class Connection
       include Debugger
 
-      def initialize(app, socket, options)
+      def initialize(app, socket, options = {})
         @app = app
         @socket = socket
         @options = options

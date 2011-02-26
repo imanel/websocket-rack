@@ -8,7 +8,7 @@ module Rack
       def on_open; end # Fired when a client is connected.
       def on_message(msg); end # Fired when a message from a client is received.
       def on_close; end # Fired when a client is disconnected.
-      def on_error; end # Fired when error occurs.
+      def on_error(error); end # Fired when error occurs.
 
       def initialize(*args)
         app, options = args[0], args[1]
