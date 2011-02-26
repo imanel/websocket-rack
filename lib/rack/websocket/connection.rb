@@ -58,27 +58,20 @@ module Rack
       end
 
       def dispatch(data)
-        if data.match(/\A<policy-file-request\s*\/>/)
-          send_flash_cross_domain_file
+        debug [:inbound_headers, data]
+        @data << data
+        @handler = HandlerFactory.build(self, @data, @secure, @debug)
+        unless @handler
+          # The whole header has not been received yet.
           return false
-        else
-          debug [:inbound_headers, data]
-          begin
-            @data << data
-            @handler = HandlerFactory.build(self, @data, @secure, @debug)
-            unless @handler
-              # The whole header has not been received yet.
-              return false
-            end
-            @data = nil
-            @handler.run
-            return true
-          rescue => e
-            debug [:error, e]
-            process_bad_request(e)
-            return false
-          end
         end
+        @data = nil
+        @handler.run
+        return true
+      rescue => e
+        debug [:error, e]
+        process_bad_request(e)
+        return false
       end
 
       def process_bad_request(reason)
