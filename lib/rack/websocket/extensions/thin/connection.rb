@@ -55,9 +55,10 @@ module Rack
             # if so then flash policy file is returned. if not then
             # rest of request is handled.
             if (data == "<policy-file-request/>\000")
+              file =  '<?xml version="1.0"?><cross-domain-policy><allow-access-from domain="*" to-ports="*"/></cross-domain-policy>'
               # ignore errors - we will close this anyway
-              send_data('<?xml version="1.0"?><cross-domain-policy><allow-access-from domain="*" to-ports="*"/></cross-domain-policy>') rescue nil
-              terminate_request
+              send_data(file) rescue nil
+              close_connection_after_writing
             else
               receive_data_without_flash_policy_file(data)
             end

@@ -87,17 +87,6 @@ module Rack
         close_connection_after_writing
       end
 
-      def send_flash_cross_domain_file
-        file =  '<?xml version="1.0"?><cross-domain-policy><allow-access-from domain="*" to-ports="*"/></cross-domain-policy>'
-        debug [:cross_domain, file]
-        send_data file
-
-        # handle the cross-domain request transparently
-        # no need to notify the user about this connection
-        @onclose = nil
-        close_connection_after_writing
-      end
-
       def send(data)
         debug [:send, data]
 
