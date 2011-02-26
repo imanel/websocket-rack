@@ -23,8 +23,16 @@ module Rack
         elsif @app
           @app.call(env)
         else
-          [ 404, { "Content-Type" => "text/plain" }, [ 'not found' ] ]
+          not_found
         end
+      end
+
+      def not_found
+        [ 404, { "Content-Type" => "text/plain" }, [ 'not found' ] ]
+      end
+
+      def bad_request
+        [ 400, { "Content-Type" => "text/plain" }, [ 'bad request' ] ]
       end
 
     end

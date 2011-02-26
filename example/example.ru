@@ -14,7 +14,7 @@ class MyApp < Rack::WebSocket::Application
   end
 end
 
-use Rack::CommonLogger
+# use Rack::CommonLogger
 
 map '/' do
   use MyApp
