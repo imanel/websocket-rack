@@ -5,8 +5,13 @@ module Rack
       def self.build(connection, data, debug = false)
         request = Rack::Request.new(data)
 
-        request.env['rack.input'].rewind
-        remains = request.env['rack.input'].read
+        unless request.env['rack.input'].nil?
+          request.env['rack.input'].rewind
+          remains = request.env['rack.input'].read
+        else
+          # The whole header has not been received yet.
+          return nil
+        end
 
         unless request.get?
           raise HandshakeError, "Must be GET request"

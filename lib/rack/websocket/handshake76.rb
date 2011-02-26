@@ -11,7 +11,7 @@ module Rack
         )
 
         location  = "#{request.env['rack.url_scheme']}://#{request.host}"
-        location << ":#{request.port}" if request.port
+        location << ":#{request.port}" if request.port > 0
         location << request.path
 
         upgrade =  "HTTP/1.1 101 WebSocket Protocol Handshake\r\n"

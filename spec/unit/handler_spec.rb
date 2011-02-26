@@ -1,6 +1,6 @@
 require 'spec/helper'
 
-describe "EventMachine::WebSocket::Handler" do
+describe "Rack::WebSocket::Handler" do
   before :each do
     @request = {
       :port => 80,
@@ -29,7 +29,7 @@ describe "EventMachine::WebSocket::Handler" do
       },
       :body => "8jKS\'y:G*Co,Wxa-"
     }
-    @secure_response = @response.merge(:headers => @response[:headers].merge('Sec-WebSocket-Location' => "wss://example.com/demo"))
+    @secure_response = @response.merge(:headers => @response[:headers].merge('Sec-WebSocket-Location' => "wss://example.com:443/demo"))
   end
 
   it "should handle good request" do
@@ -73,7 +73,7 @@ describe "EventMachine::WebSocket::Handler" do
 
     handler(@request).should send_handshake(@response)
   end
-  
+
   it "should raise error on HTTP request" do
     @request[:headers] = {
       'Host' => 'www.google.com',
@@ -85,10 +85,10 @@ describe "EventMachine::WebSocket::Handler" do
       'Keep-Alive' => '300',
       'Connection' => 'keep-alive',
     }
-    
+
     lambda {
       handler(@request).handshake
-    }.should raise_error(EM::WebSocket::HandshakeError)
+    }.should raise_error(Rack::WebSocket::HandshakeError)
   end
 
   it "should raise error on wrong method" do
@@ -96,7 +96,7 @@ describe "EventMachine::WebSocket::Handler" do
 
     lambda {
       handler(@request).handshake
-    }.should raise_error(EM::WebSocket::HandshakeError)
+    }.should raise_error(Rack::WebSocket::HandshakeError)
   end
 
   it "should raise error if upgrade header incorrect" do
@@ -104,7 +104,7 @@ describe "EventMachine::WebSocket::Handler" do
 
     lambda {
       handler(@request).handshake
-    }.should raise_error(EM::WebSocket::HandshakeError)
+    }.should raise_error(Rack::WebSocket::HandshakeError)
   end
 
   it "should raise error if Sec-WebSocket-Protocol is empty" do
@@ -112,7 +112,7 @@ describe "EventMachine::WebSocket::Handler" do
 
     lambda {
       handler(@request).handshake
-    }.should raise_error(EM::WebSocket::HandshakeError)
+    }.should raise_error(Rack::WebSocket::HandshakeError)
   end
 
   %w[Sec-WebSocket-Key1 Sec-WebSocket-Key2].each do |header|
@@ -121,19 +121,8 @@ describe "EventMachine::WebSocket::Handler" do
 
       lambda {
         handler(@request).handshake
-      }.should raise_error(EM::WebSocket::HandshakeError, 'Websocket Key1 or Key2 does not contain spaces - this is a symptom of a cross-protocol attack')
+      }.should raise_error(Rack::WebSocket::HandshakeError, 'Websocket Key1 or Key2 does not contain spaces - this is a symptom of a cross-protocol attack')
     end
   end
 
-  it "should leave request with incomplete header" do
-    data = format_request(@request)
-    # Sends only half of the request
-    EM::WebSocket::HandlerFactory.build(mock(EM::WebSocket::Connection), data[0...(data.length / 2)]).should == nil
-  end
-
-  it "should leave request with incomplete third key" do
-    data = format_request(@request)
-    # Removes last two bytes of the third key
-    EM::WebSocket::HandlerFactory.build(mock(EM::WebSocket::Connection), data[0...(data.length - 2)]).should == nil
-  end
 end

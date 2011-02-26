@@ -1,53 +1,26 @@
 require 'rubygems'
 require 'rspec'
 require 'pp'
-require 'em-http'
+require 'stringio'
 
-require 'em-websocket'
+require 'rack/websocket'
 
 Rspec.configure do |c|
   c.mock_with :rspec
 end
 
-class FakeWebSocketClient < EM::Connection
-  attr_writer :onopen, :onclose, :onmessage
-  attr_reader :handshake_response, :packets
-
-  def initialize
-    @state = :new
-    @packets = []
-  end
-
-  def receive_data(data)
-    # puts "RECEIVE DATA #{data}"
-    if @state == :new
-      @handshake_response = data
-      @onopen.call if @onopen
-      @state = :open
-    else
-      @onmessage.call(data) if @onmessage
-      @packets << data
-    end
-  end
-
-  def send(data)
-    send_data("\x00#{data}\xff")
-  end
-
-  def unbind
-    @onclose.call if @onclose
-  end
-end
-
-def failed
-  EventMachine.stop
-  fail
-end
-
 def format_request(r)
-  data = "#{r[:method]} #{r[:path]} HTTP/1.1\r\n"
-  header_lines = r[:headers].map { |k,v| "#{k}: #{v}" }
-  data << [header_lines, '', r[:body]].join("\r\n")
+  data = {}
+  data['REQUEST_METHOD'] = r[:method] if r[:method]
+  data['PATH_INFO'] = r[:path] if r[:path]
+  data['SERVER_PORT'] = r[:port] if r[:port] && r[:port] != 80
+  r[:headers].each do |key, value|
+    data['HTTP_' + key.upcase.gsub('-','_')] = value
+  end
+  data['rack.input'] = StringIO.new(r[:body]) if r[:body]
+  # data = "#{r[:method]} #{r[:path]} HTTP/1.1\r\n"
+  # header_lines = r[:headers].map { |k,v| "#{k}: #{v}" }
+  # data << [header_lines, '', r[:body]].join("\r\n")
   data
 end
 
@@ -60,7 +33,8 @@ end
 
 def handler(request, secure = false)
   connection = Object.new
-  EM::WebSocket::HandlerFactory.build(connection, format_request(request), secure)
+  secure_hash = secure ? {'rack.url_scheme' => 'https'} : {}
+  Rack::WebSocket::HandlerFactory.build(connection, format_request(request).merge(secure_hash))
 end
 
 RSpec::Matchers.define :send_handshake do |response|
