@@ -21,12 +21,26 @@ module Rack
         if(env['HTTP_CONNECTION'].to_s.downcase == 'upgrade' && env['HTTP_UPGRADE'].to_s.downcase == 'websocket')
           socket = env['async.connection']
           connection = Connection.new(self, socket)
-          connection.dispatch(env)
+          connection.dispatch(env) ? async_response : failure_response
         elsif @app
           @app.call(env)
         else
-          [ 404, { "Content-Type" => "text/plain" }, [ 'not found' ] ]
+          not_fount_response
         end
+      end
+
+      protected
+
+      def async_response
+        [-1, {}, []]
+      end
+
+      def failure_response
+        [ 400, { "Content-Type" => "text/plain" }, [ 'invalid data' ] ]
+      end
+
+      def not_fount_response
+        [ 404, { "Content-Type" => "text/plain" }, [ 'not found' ] ]
       end
 
     end
