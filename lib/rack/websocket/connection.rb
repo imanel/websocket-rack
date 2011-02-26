@@ -48,11 +48,7 @@ module Rack
       def receive_data(data)
         debug [:receive_data, data]
 
-        if @handler
-          @handler.receive_data(data)
-        else
-          dispatch(data)
-        end
+        @handler.receive_data(data)
       end
 
       def unbind
