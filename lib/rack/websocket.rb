@@ -8,7 +8,6 @@ module Rack
     class DataError < WebSocketError; end
 
     autoload :Application,    "#{ROOT_PATH}/websocket/application"
-    autoload :Client,         "#{ROOT_PATH}/websocket/client"
     autoload :Connection,     "#{ROOT_PATH}/websocket/connection"
     autoload :Debugger,       "#{ROOT_PATH}/websocket/debugger"
     autoload :Framing03,      "#{ROOT_PATH}/websocket/framing03"
