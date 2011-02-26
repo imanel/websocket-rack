@@ -40,7 +40,7 @@ module Rack
 
       def send_data(data)
         if @connection
-          @connection.send
+          @connection.send data
         else
           raise WebSocketError, "WebSocket not opened"
         end
