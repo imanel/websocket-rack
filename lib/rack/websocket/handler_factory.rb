@@ -35,8 +35,7 @@ module Rack
         end
 
         # transform headers
-        protocol = (request.scheme == 'https' ? "wss" : "ws")
-        request.env['Host'] = Addressable::URI.parse("#{protocol}://"+request.env['Host'])
+        request.env['rack.url_scheme'] = (request.scheme == 'https' ? "wss" : "ws")
 
         if version = request.env['HTTP_SEC_WEBSOCKET_DRAFT']
           if version == '1' || version == '2' || version == '3'
