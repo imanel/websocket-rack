@@ -30,6 +30,22 @@ module Rack
         end
       end
 
+      def close_websocket
+        if @connection
+          @connection.close_websocket
+        else
+          raise WebSocketError, "WebSocket not opened"
+        end
+      end
+
+      def send_data(data)
+        if @connection
+          @connection.send
+        else
+          raise WebSocketError, "WebSocket not opened"
+        end
+      end
+
       protected
 
       def async_response
