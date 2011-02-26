@@ -1,15 +1,15 @@
 require 'lib/rack/websocket'
 
 class MyApp < Rack::WebSocket::Application
-  def on_open(client)
+  def on_open
     puts "client connected"
   end
 
-  def on_message(client, msg)
+  def on_message(msg)
     puts "message received: " + msg
   end
 
-  def on_close(client)
+  def on_close
     puts "client disconnected"
   end
 end
