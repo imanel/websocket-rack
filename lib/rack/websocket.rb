@@ -5,6 +5,7 @@ module Rack
 
     autoload :Application,    "#{ROOT_PATH}/websocket/application"
     autoload :Client,         "#{ROOT_PATH}/websocket/client"
+    autoload :Debugger,       "#{ROOT_PATH}/websocket/debugger"
     autoload :Framing03,      "#{ROOT_PATH}/websocket/framing03"
     autoload :Framing76,      "#{ROOT_PATH}/websocket/framing76"
     autoload :Handler,        "#{ROOT_PATH}/websocket/handler"
