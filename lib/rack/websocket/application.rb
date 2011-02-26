@@ -19,9 +19,10 @@ module Rack
 
       def call(env)
         if(env['HTTP_CONNECTION'].to_s.downcase == 'upgrade' && env['HTTP_UPGRADE'].to_s.downcase == 'websocket')
+          @env = env
           socket = env['async.connection']
-          connection = Connection.new(self, socket)
-          connection.dispatch(env) ? async_response : failure_response
+          @connection = Connection.new(self, socket)
+          @connection.dispatch(env) ? async_response : failure_response
         elsif @app
           @app.call(env)
         else
