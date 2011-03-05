@@ -1,7 +1,7 @@
-# require 'spec/helper'
-#
-# describe EventMachine::WebSocket do
-#
+# require 'helper'
+# 
+# describe Rack::WebSocket do
+# 
 #   it "should automatically complete WebSocket handshake" do
 #     EM.run do
 #       MSG = "Hello World!"
@@ -9,13 +9,13 @@
 #         http = EventMachine::HttpRequest.new('ws://127.0.0.1:12345/').get :timeout => 0
 #         http.errback { failed }
 #         http.callback { http.response_header.status.should == 101 }
-#
+# 
 #         http.stream { |msg|
 #           msg.should == MSG
 #           EventMachine.stop
 #         }
 #       end
-#
+# 
 #       EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 12345) do |ws|
 #         ws.onopen {
 #           ws.send MSG
@@ -23,7 +23,7 @@
 #       end
 #     end
 #   end
-#
+# 
 #   it "should fail on non WebSocket requests" do
 #     EM.run do
 #       EventMachine.add_timer(0.1) do
@@ -34,16 +34,16 @@
 #           EventMachine.stop
 #         }
 #       end
-#
+# 
 #       EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 12345) {}
 #     end
 #   end
-#
+# 
 #   it "should split multiple messages into separate callbacks" do
 #     EM.run do
 #       messages = %w[1 2]
 #       received = []
-#
+# 
 #       EventMachine.add_timer(0.1) do
 #         http = EventMachine::HttpRequest.new('ws://127.0.0.1:12345/').get :timeout => 0
 #         http.errback { failed }
@@ -54,20 +54,20 @@
 #           http.send messages[1]
 #         }
 #       end
-#
+# 
 #       EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 12345) do |ws|
 #         ws.onopen {}
 #         ws.onclose {}
 #         ws.onmessage {|msg|
 #           msg.should == messages[received.size]
 #           received.push msg
-#
+# 
 #           EventMachine.stop if received.size == messages.size
 #         }
 #       end
 #     end
 #   end
-#
+# 
 #   it "should call onclose callback when client closes connection" do
 #     EM.run do
 #       EventMachine.add_timer(0.1) do
@@ -79,7 +79,7 @@
 #         }
 #         http.stream{|msg|}
 #       end
-#
+# 
 #       EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 12345) do |ws|
 #         ws.onopen {}
 #         ws.onclose {
@@ -89,7 +89,7 @@
 #       end
 #     end
 #   end
-#
+# 
 #   it "should call onerror callback with raised exception and close connection on bad handshake" do
 #     EM.run do
 #       EventMachine.add_timer(0.1) do
@@ -97,7 +97,7 @@
 #         http.errback { http.response_header.status.should == 0 }
 #         http.callback { failed }
 #       end
-#
+# 
 #       EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 12345) do |ws|
 #         ws.onopen { failed }
 #         ws.onclose { EventMachine.stop }
@@ -109,7 +109,7 @@
 #       end
 #     end
 #   end
-#
+# 
 #   it "should populate ws.request with appropriate headers" do
 #     EM.run do
 #       EventMachine.add_timer(0.1) do
@@ -121,7 +121,7 @@
 #         }
 #         http.stream { |msg| }
 #       end
-#
+# 
 #       EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 12345) do |ws|
 #         ws.onopen {
 #           ws.request["User-Agent"].should == "EventMachine HttpClient"
@@ -138,7 +138,7 @@
 #       end
 #     end
 #   end
-#
+# 
 #   it "should allow sending and retrieving query string args passed in on the connection request." do
 #     EM.run do
 #       EventMachine.add_timer(0.1) do
@@ -150,10 +150,12 @@
 #         }
 #         http.stream { |msg| }
 #       end
-#
+# 
 #       EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 12345) do |ws|
 #         ws.onopen {
-#           ws.request["Path"].should == "/?baz=qux&foo=bar"
+#           path, query = ws.request["Path"].split('?')
+#           path.should == '/'
+#           Hash[*query.split(/&|=/)].should == {"foo"=>"bar", "baz"=>"qux"}
 #           ws.request["Query"]["foo"].should == "bar"
 #           ws.request["Query"]["baz"].should == "qux"
 #         }
@@ -164,7 +166,7 @@
 #       end
 #     end
 #   end
-#
+# 
 #   it "should ws.response['Query'] to empty hash when no query string params passed in connection URI" do
 #     EM.run do
 #       EventMachine.add_timer(0.1) do
@@ -176,7 +178,7 @@
 #         }
 #         http.stream { |msg| }
 #       end
-#
+# 
 #       EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 12345) do |ws|
 #         ws.onopen {
 #           ws.request["Path"].should == "/"
@@ -189,7 +191,7 @@
 #       end
 #     end
 #   end
-#
+# 
 #   it "should raise an exception if frame sent before handshake complete" do
 #     EM.run {
 #       EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 12345) { |c|
@@ -201,7 +203,7 @@
 #           EM.stop
 #         }
 #       }
-#
+# 
 #       client = EM.connect('0.0.0.0', 12345, EM::Connection)
 #     }
 #   end

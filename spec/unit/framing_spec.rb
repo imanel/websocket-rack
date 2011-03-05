@@ -1,4 +1,4 @@
-require 'spec/helper'
+require 'helper'
 
 describe Rack::WebSocket::Framing03 do
   class FramingContainer
@@ -6,7 +6,7 @@ describe Rack::WebSocket::Framing03 do
 
     def <<(data)
       @data << data
-      process_data
+      process_data(data)
     end
 
     def debug(*args); end

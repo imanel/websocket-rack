@@ -1,4 +1,4 @@
-require 'spec/helper'
+require 'helper'
 
 describe "Rack::WebSocket::Handler" do
   before :each do
@@ -123,6 +123,14 @@ describe "Rack::WebSocket::Handler" do
         handler(@request).handshake
       }.should raise_error(Rack::WebSocket::HandshakeError, 'Websocket Key1 or Key2 does not contain spaces - this is a symptom of a cross-protocol attack')
     end
+  end
+  
+  it "should raise error if spaces do not divide numbers in Sec-WebSocket-Key* " do
+    @request[:headers]['Sec-WebSocket-Key2'] = '12998 5 Y3 1.P00'
+
+    lambda {
+      handler(@request).handshake
+    }.should raise_error(EM::WebSocket::HandshakeError, 'Invalid Key "12998 5 Y3 1.P00"')
   end
 
 end
