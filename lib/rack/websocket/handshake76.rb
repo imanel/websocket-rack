@@ -35,21 +35,31 @@ module Rack
 
       def solve_challenge(first, second, third)
         # Refer to 5.2 4-9 of the draft 76
-        sum = [(extract_nums(first) / count_spaces(first))].pack("N*") +
-          [(extract_nums(second) / count_spaces(second))].pack("N*") +
+        sum = [numbers_over_spaces(first)].pack("N*") +
+          [numbers_over_spaces(second)].pack("N*") +
           third
         Digest::MD5.digest(sum)
       end
 
-      def extract_nums(string)
-        string.scan(/[0-9]/).join.to_i
-      end
+      def numbers_over_spaces(string)
+        numbers = string.scan(/[0-9]/).join.to_i
 
-      def count_spaces(string)
         spaces = string.scan(/ /).size
         # As per 5.2.5, abort the connection if spaces are zero.
         raise HandshakeError, "Websocket Key1 or Key2 does not contain spaces - this is a symptom of a cross-protocol attack" if spaces == 0
-        return spaces
+
+        # As per 5.2.6, abort if numbers is not an integral multiple of spaces
+        if numbers % spaces != 0
+          raise HandshakeError, "Invalid Key #{string.inspect}"
+        end
+
+        quotient = numbers / spaces
+
+        if quotient > 2**32-1
+          raise HandshakeError, "Challenge computation out of range for key #{string.inspect}"
+        end
+
+        return quotient
       end
 
       def validate_protocol!(protocol)

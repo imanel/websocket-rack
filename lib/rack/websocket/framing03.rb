@@ -1,36 +1,38 @@
+# encoding: BINARY
+
 module Rack
   module WebSocket
     module Framing03
-
+      
       def initialize_framing
         @data = ''
         @application_data_buffer = '' # Used for MORE frames
       end
-
-      def process_data
+      
+      def process_data(newdata)
         error = false
 
         while !error && @data.size > 1
           pointer = 0
 
-          more = (@data[pointer] & 0b10000000) == 0b10000000
+          more = (@data.getbyte(pointer) & 0b10000000) == 0b10000000
           # Ignoring rsv1-3 for now
-          opcode = @data[0] & 0b00001111
+          opcode = @data.getbyte(0) & 0b00001111
           pointer += 1
 
           # Ignoring rsv4
-          length = @data[pointer] & 0b01111111
+          length = @data.getbyte(pointer) & 0b01111111
           pointer += 1
 
           payload_length = case length
           when 127 # Length defined by 8 bytes
             # Check buffer size
-            if @data[pointer+8-1] == nil
+            if @data.getbyte(pointer+8-1) == nil
               debug [:buffer_incomplete, @data.inspect]
               error = true
               next
             end
-
+            
             # Only using the last 4 bytes for now, till I work out how to
             # unpack 8 bytes. I'm sure 4GB frames will do for now :)
             l = @data[(pointer+4)..(pointer+7)].unpack('N').first
@@ -38,12 +40,12 @@ module Rack
             l
           when 126 # Length defined by 2 bytes
             # Check buffer size
-            if @data[pointer+2-1] == nil
+            if @data.getbyte(pointer+2-1) == nil
               debug [:buffer_incomplete, @data.inspect]
               error = true
               next
             end
-
+            
             l = @data[pointer..(pointer+1)].unpack('n').first
             pointer += 2
             l
@@ -52,7 +54,7 @@ module Rack
           end
 
           # Check buffer size
-          if @data[pointer+payload_length-1] == nil
+          if @data.getbyte(pointer+payload_length-1) == nil
             debug [:buffer_incomplete, @data.inspect]
             error = true
             next
@@ -87,7 +89,7 @@ module Rack
           end
         end # end while
       end
-
+      
       def send_frame(frame_type, application_data)
         if @state == :closing && data_frame?(frame_type)
           raise WebSocketError, "Cannot send data frame since connection is closing"

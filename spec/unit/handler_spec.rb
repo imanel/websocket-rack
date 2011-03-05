@@ -130,7 +130,7 @@ describe "Rack::WebSocket::Handler" do
 
     lambda {
       handler(@request).handshake
-    }.should raise_error(EM::WebSocket::HandshakeError, 'Invalid Key "12998 5 Y3 1.P00"')
+    }.should raise_error(Rack::WebSocket::HandshakeError, 'Invalid Key "12998 5 Y3 1.P00"')
   end
 
 end

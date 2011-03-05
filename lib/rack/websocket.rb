@@ -30,3 +30,11 @@ module Rack
 end
 
 ::Thin.send(:include, ::Rack::WebSocket::Extensions::Thin) if defined?(Thin)
+
+unless ''.respond_to?(:getbyte)
+  class String
+    def getbyte(i)
+      self[i]
+    end
+  end
+end
