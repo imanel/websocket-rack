@@ -95,6 +95,19 @@ Rack env - contain all data sent by client when connectind.
 
 Thin wrapper between client and EventMachine::Connection
 
+## FAQ
+
+### Which Rack servers are supported?
+
+Currently only Thin. I plan to support also Rainbows! in future, but not yet.
+
+### How to enable wss/SSL support?
+
+Thin v1.2.8 have --ssl option - just use that! :)
+
+### How to use function xxx?
+
+Check [Thin](http://code.macournoyer.com/thin/) config - any option supported by Thin(like demonizing, SSL etc.) is supported by WebSocket-Rack.
 
 ## About
 
