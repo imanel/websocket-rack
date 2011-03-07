@@ -1,6 +1,6 @@
 # Changelog
 
-## Edge
+## 0.1.1 / 2011-03-07
 
 - add missing gem dependencies
 - clear connection inactivity timeout for websocket connections
