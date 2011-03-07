@@ -101,6 +101,10 @@ Thin wrapper between client and EventMachine::Connection
 
 Currently only Thin. I plan to support also Rainbows! in future, but not yet.
 
+### Why (using Thin) user is disconnected after 30 seconds?
+
+This is bug in EventMachine < 1.0.0. Please consider updating to newer version or use thin-websocket wrapper around thin binary.
+
 ### How to enable wss/SSL support?
 
 Thin v1.2.8 have --ssl option - just use that! :)
