@@ -25,7 +25,7 @@ end
 # use Rack::CommonLogger
 
 map '/' do
-  use MyApp
+  use MyApp #, :websocket_debug => true
 
   run Rack::File.new(File.expand_path(File.dirname(__FILE__)) + '/html')
 end

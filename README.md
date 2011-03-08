@@ -105,6 +105,10 @@ Currently only Thin. I plan to support also Rainbows! in future, but not yet.
 
 This is bug in EventMachine < 1.0.0. Please consider updating to newer version or use thin-websocket wrapper around thin binary.
 
+### How to enable debugging?
+
+Just use :websocket\_debug => true option when initializing your app.
+
 ### How to enable wss/SSL support?
 
 Thin v1.2.8 have --ssl option - just use that! :)
