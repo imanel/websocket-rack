@@ -91,9 +91,9 @@ Example:
 
 Rack env - contain all data sent by client when connectind.
 
-### @connection
+### @conn
 
-Thin wrapper between client and EventMachine::Connection
+Connection - thin wrapper between client and EventMachine::Connection
 
 ## FAQ
 
