@@ -26,7 +26,7 @@ module Rack
         elsif @app
           @app.call(env)
         else
-          not_fount_response
+          not_found_response
         end
       end
 
@@ -56,7 +56,7 @@ module Rack
         [ 400, { "Content-Type" => "text/plain" }, [ 'invalid data' ] ]
       end
 
-      def not_fount_response
+      def not_found_response
         [ 404, { "Content-Type" => "text/plain" }, [ 'not found' ] ]
       end
 
