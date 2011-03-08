@@ -1,9 +1,14 @@
 # Changelog
 
+## 0.1.2 / 2011-03-08
+
+- change Rack::WebSocket::Application @connection variable name to @conn - first one is to often used to block it
+- allow debugging of WebSocket connection
+
 ## 0.1.1 / 2011-03-07
 
 - add missing gem dependencies
-- clear connection inactivity timeout for websocket connections
+- clear connection inactivity timeout for WebSocket connections
 - inform about bug in EM < 1.0.0
 - add thin-websocket wrapper around thin binary
 
