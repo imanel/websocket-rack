@@ -21,8 +21,8 @@ module Rack
         if(env['HTTP_CONNECTION'].to_s.downcase == 'upgrade' && env['HTTP_UPGRADE'].to_s.downcase == 'websocket')
           @env = env
           socket = env['async.connection']
-          @connection = Connection.new(self, socket)
-          @connection.dispatch(env) ? async_response : failure_response
+          @conn = Connection.new(self, socket)
+          @conn.dispatch(env) ? async_response : failure_response
         elsif @app
           @app.call(env)
         else
@@ -31,16 +31,16 @@ module Rack
       end
 
       def close_websocket
-        if @connection
-          @connection.close_websocket
+        if @conn
+          @conn.close_websocket
         else
           raise WebSocketError, "WebSocket not opened"
         end
       end
 
       def send_data(data)
-        if @connection
-          @connection.send data
+        if @conn
+          @conn.send data
         else
           raise WebSocketError, "WebSocket not opened"
         end
