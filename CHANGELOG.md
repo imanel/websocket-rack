@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.3 / 2011-03-12
+
+- fixed critical bug that duplicated instance variables
+
 ## 0.1.2 / 2011-03-08
 
 - change Rack::WebSocket::Application @connection variable name to @conn - first one is to often used to block it
