@@ -5,7 +5,7 @@ module Rack
       class << self
         def new(*args)
           if args.last == {:real_run => true}
-            args.shift
+            args.pop
             super(*args)
           else
             proc do |env|
