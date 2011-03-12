@@ -1,6 +1,19 @@
 module Rack
   module WebSocket
     class Application
+      
+      class << self
+        def new(*args)
+          if args.last == {:real_run => true}
+            args.shift
+            super(*args)
+          else
+            proc do |env|
+              self.new(*(args << {:real_run => true})).call(env)
+            end
+          end
+        end
+      end
 
       DEFAULT_OPTIONS = {}
       attr_accessor :options
