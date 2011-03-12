@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.4 / 2011-03-13
+
+- performance improvements thanks to rbtrace
+
 ## 0.1.3 / 2011-03-12
 
 - fixed critical bug that duplicated instance variables

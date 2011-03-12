@@ -2,7 +2,7 @@ require 'rack'
 
 module Rack
   module WebSocket
-    VERSION = "0.1.3.1"
+    VERSION = "0.1.4"
     ROOT_PATH = ::File.expand_path(::File.dirname(__FILE__))
 
     class WebSocketError < RuntimeError; end
