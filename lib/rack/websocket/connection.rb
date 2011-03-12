@@ -65,7 +65,7 @@ module Rack
       end
 
       def dispatch(data)
-        debug [:inbound_headers, data.inspect]
+        debug [:inbound_headers, data.inspect] if @debug
         @handler = HandlerFactory.build(self, data, @debug)
         unless @handler
           # The whole header has not been received yet.
