@@ -5,7 +5,7 @@ module Rack
       autoload :Thin, "#{ROOT_PATH}/websocket/extensions/thin"
       
       def self.apply!
-        ::Thin.send(:include, ::Rack::WebSocket::Extensions::Thin) if defined?(::Thin)
+        Thin.apply! if defined?(::Thin)
       end
       
     end

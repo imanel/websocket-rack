@@ -5,9 +5,8 @@ module Rack
 
         autoload :Connection, "#{::File.dirname(__FILE__)}/thin/connection"
 
-        def self.included(thin)
-          thin_connection = thin.const_get(:Connection)
-          thin_connection.send(:include, Thin.const_get(:Connection))
+        def self.apply!
+          ::Thin::Connection.send(:include, ::Rack::WebSocket::Extensions::Thin::Connection)
         end
 
       end
