@@ -1,7 +1,7 @@
 require 'lib/rack/websocket'
 
 class MyApp < Rack::WebSocket::Application
-  def on_open
+  def on_open(env)
     puts "client connected"
     EM.add_timer(5) do
       send_data "This message should show-up 5 secs later"
@@ -12,12 +12,12 @@ class MyApp < Rack::WebSocket::Application
     end
   end
 
-  def on_message(msg)
+  def on_message(env, msg)
     puts "message received: " + msg
-    send_data "Hello #{msg}"
+    send_data "Message: #{msg}"
   end
 
-  def on_close
+  def on_close(env)
     puts "client disconnected"
   end
 end

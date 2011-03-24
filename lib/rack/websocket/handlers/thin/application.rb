@@ -3,33 +3,16 @@ module Rack
     module Handlers
       module Thin
         class Application
-      
-          class << self
-            def new(*args)
-              if args.last == {:real_run => true}
-                args.pop
-                super(*args)
-              else
-                proc do |env|
-                  self.new(*(args << {:real_run => true})).call(env)
-                end
-              end
-            end
-          end
 
-          DEFAULT_OPTIONS = {}
-          attr_accessor :options
+          def on_open; @parent.on_open(@env); end # Fired when a client is connected.
+          def on_message(msg); @parent.on_message(@env, msg); end # Fired when a message from a client is received.
+          def on_close; @parent.on_close(@env); end # Fired when a client is disconnected.
+          def on_error(error); @parent.on_error(@env, error); end # Fired when error occurs.
 
-          def on_open; end # Fired when a client is connected.
-          def on_message(msg); end # Fired when a message from a client is received.
-          def on_close; end # Fired when a client is disconnected.
-          def on_error(error); end # Fired when error occurs.
-
-          def initialize(*args)
-            app, options = args[0], args[1]
-            app, options = nil, app if app.is_a?(Hash)
-            @options = DEFAULT_OPTIONS.merge(options || {})
+          def initialize(parent, app, options = {})
+            @parent = parent
             @app = app
+            @options = options
           end
 
           def call(env)

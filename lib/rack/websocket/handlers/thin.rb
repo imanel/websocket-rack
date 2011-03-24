@@ -17,6 +17,10 @@ module Rack
         autoload :HandlerFactory, "#{ROOT_PATH}/websocket/handlers/thin/handler_factory"
         autoload :Handshake75,    "#{ROOT_PATH}/websocket/handlers/thin/handshake75"
         autoload :Handshake76,    "#{ROOT_PATH}/websocket/handlers/thin/handshake76"
+        
+        def self.new(*args)
+          Application.new *args
+        end
       
       end
     end
