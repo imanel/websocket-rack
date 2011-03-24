@@ -11,7 +11,7 @@ module Rack
 
     autoload :Application, "#{ROOT_PATH}/websocket/application"
     autoload :Extensions,  "#{ROOT_PATH}/websocket/extensions"
-    autoload :Handlers,    "#{ROOT_PATH}/websocket/handlers"
+    autoload :Handler,    "#{ROOT_PATH}/websocket/handler"
   end
 end
 

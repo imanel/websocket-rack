@@ -1,8 +1,8 @@
 module Rack
   module WebSocket
-    module Handlers
+    module Handler
       
-      autoload :Thin, "#{ROOT_PATH}/websocket/handlers/thin"
+      autoload :Thin, "#{ROOT_PATH}/websocket/handler/thin"
       
       def self.detect(env)
         server_software = env['SERVER_SOFTWARE']

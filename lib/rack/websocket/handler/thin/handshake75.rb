@@ -1,6 +1,6 @@
 module Rack
   module WebSocket
-    module Handlers
+    module Handler
       module Thin
         module Handshake75
           def handshake

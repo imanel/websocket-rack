@@ -2,7 +2,7 @@
 
 module Rack
   module WebSocket
-    module Handlers
+    module Handler
       module Thin
         module Framing76
       

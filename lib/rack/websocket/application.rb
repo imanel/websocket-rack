@@ -40,7 +40,7 @@ module Rack
       private
       
       def detect_handler(env)
-        self.class.websocket_handler ||= Handlers.detect(env)
+        self.class.websocket_handler ||= Handler.detect(env)
       end
       
       def websocket_handler

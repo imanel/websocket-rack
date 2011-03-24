@@ -2,7 +2,7 @@ require 'digest/md5'
 
 module Rack
   module WebSocket
-    module Handlers
+    module Handler
       module Thin
         module Handshake76
           def handshake
