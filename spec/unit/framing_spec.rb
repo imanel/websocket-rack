@@ -1,8 +1,8 @@
 require 'helper'
 
-describe Rack::WebSocket::Framing03 do
+describe Rack::WebSocket::Handlers::Thin::Framing03 do
   class FramingContainer
-    include Rack::WebSocket::Framing03
+    include Rack::WebSocket::Handlers::Thin::Framing03
 
     def <<(data)
       @data << data

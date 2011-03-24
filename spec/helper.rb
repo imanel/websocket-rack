@@ -34,7 +34,7 @@ end
 def handler(request, secure = false)
   connection = Object.new
   secure_hash = secure ? {'rack.url_scheme' => 'https'} : {}
-  Rack::WebSocket::HandlerFactory.build(connection, format_request(request).merge(secure_hash))
+  Rack::WebSocket::Handlers::Thin::HandlerFactory.build(connection, format_request(request).merge(secure_hash))
 end
 
 RSpec::Matchers.define :send_handshake do |response|

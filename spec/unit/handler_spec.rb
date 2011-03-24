@@ -1,6 +1,6 @@
 require 'helper'
 
-describe "Rack::WebSocket::Handler" do
+describe "Rack::WebSocket::Handlers::Thin::Handler" do
   before :each do
     @request = {
       :port => 80,
