@@ -1,7 +1,7 @@
 module Rack
   module WebSocket
     module Handler
-      module Thin
+      class Thin
         module Handshake75
           def handshake
             location  = "#{request.env['rack.url_scheme']}://#{request.host}"

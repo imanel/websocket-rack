@@ -3,7 +3,7 @@
 module Rack
   module WebSocket
     module Handler
-      module Thin
+      class Thin
         module Framing76
       
           # Set the max frame lenth to very high value (10MB) until there is a

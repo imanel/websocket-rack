@@ -1,7 +1,7 @@
 module Rack
   module WebSocket
     module Handler
-      module Thin
+      class Thin
         class Handler03 < Handler
           include Handshake76
           include Framing03

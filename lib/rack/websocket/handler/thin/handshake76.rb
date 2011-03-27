@@ -3,7 +3,7 @@ require 'digest/md5'
 module Rack
   module WebSocket
     module Handler
-      module Thin
+      class Thin
         module Handshake76
           def handshake
             challenge_response = solve_challenge(

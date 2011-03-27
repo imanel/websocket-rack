@@ -3,7 +3,7 @@
 module Rack
   module WebSocket
     module Handler
-      module Thin
+      class Thin
         module Framing03
       
           def initialize_framing

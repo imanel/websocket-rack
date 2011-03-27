@@ -3,7 +3,7 @@ require 'addressable/uri'
 module Rack
   module WebSocket
     module Handler
-      module Thin
+      class Thin
         class Connection
           include Debugger
 
