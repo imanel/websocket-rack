@@ -2,6 +2,7 @@ module Rack
   module WebSocket
     module Handler
       
+      autoload :Base, "#{ROOT_PATH}/websocket/handler/base"
       autoload :Thin, "#{ROOT_PATH}/websocket/handler/thin"
       
       def self.detect(env)
