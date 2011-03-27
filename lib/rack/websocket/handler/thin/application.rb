@@ -9,9 +9,8 @@ module Rack
           def on_close; @parent.on_close(@env); end # Fired when a client is disconnected.
           def on_error(error); @parent.on_error(@env, error); end # Fired when error occurs.
 
-          def initialize(parent, app, options = {})
+          def initialize(parent, options = {})
             @parent = parent
-            @app = app
             @options = options
           end
 
@@ -21,8 +20,6 @@ module Rack
               socket = env['async.connection']
               @conn = Connection.new(self, socket, :debug => !!@options[:websocket_debug])
               @conn.dispatch(env) ? async_response : failure_response
-            elsif @app
-              @app.call(env)
             else
               not_found_response
             end

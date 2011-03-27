@@ -13,11 +13,8 @@ module Rack
       def on_close(env); end
       def on_error(env, error); end
       
-      def initialize(*args)
-        app, options = args[0], args[1]
-        app, options = nil, app if app.is_a?(Hash)
-        @options = DEFAULT_OPTIONS.merge(options || {})
-        @app = app
+      def initialize(options = {})
+        @options = DEFAULT_OPTIONS.merge(options)
       end
       
       def call(env)
@@ -44,7 +41,7 @@ module Rack
       end
       
       def websocket_handler
-        @websocket_handler ||= self.class.websocket_handler.new(self, @app, @options)
+        @websocket_handler ||= self.class.websocket_handler.new(self, @options || {})
       end
       
     end
