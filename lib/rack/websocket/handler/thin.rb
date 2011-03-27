@@ -6,26 +6,13 @@ module Rack
       class Thin < Base
 
         autoload :Connection,     "#{ROOT_PATH}/websocket/handler/thin/connection"
-        autoload :Debugger,       "#{ROOT_PATH}/websocket/handler/thin/debugger"
-        autoload :Framing03,      "#{ROOT_PATH}/websocket/handler/thin/framing03"
-        autoload :Framing76,      "#{ROOT_PATH}/websocket/handler/thin/framing76"
-        autoload :Handler,        "#{ROOT_PATH}/websocket/handler/thin/handler"
-        autoload :Handler03,      "#{ROOT_PATH}/websocket/handler/thin/handler03"
-        autoload :Handler75,      "#{ROOT_PATH}/websocket/handler/thin/handler75"
-        autoload :Handler76,      "#{ROOT_PATH}/websocket/handler/thin/handler76"
         autoload :HandlerFactory, "#{ROOT_PATH}/websocket/handler/thin/handler_factory"
-        autoload :Handshake75,    "#{ROOT_PATH}/websocket/handler/thin/handshake75"
-        autoload :Handshake76,    "#{ROOT_PATH}/websocket/handler/thin/handshake76"
 
         def call(env)
-          if(env['HTTP_CONNECTION'].to_s.downcase == 'upgrade' && env['HTTP_UPGRADE'].to_s.downcase == 'websocket')
-            @env = env
-            socket = env['async.connection']
-            @conn = Connection.new(self, socket, :debug => @options[:debug])
-            @conn.dispatch(env) ? async_response : failure_response
-          else
-            failure_response
-          end
+          socket = env['async.connection']
+          request = request_from_env(env)
+          @conn = Connection.new(self, socket, :debug => @options[:debug])
+          @conn.dispatch(request) ? async_response : failure_response
         end
 
         def send_data(data)
@@ -42,6 +29,29 @@ module Rack
           else
             raise WebSocketError, "WebSocket not opened"
           end
+        end
+        
+        private
+        
+        def request_from_env(env)
+          request = {}
+          request['Path']   = env['REQUEST_PATH'].to_s
+          request['Method'] = env['REQUEST_METHOD']
+          request['Query']  = env['QUERY_STRING'].to_s
+          request['body']   = env['rack.input'].read
+          
+          request['Sec-WebSocket-Draft']    = env['HTTP_SEC_WEBSOCKET_DRAFT']
+          request['Sec-WebSocket-Key1']     = env['HTTP_SEC_WEBSOCKET_KEY1']
+          request['Sec-WebSocket-Key2']     = env['HTTP_SEC_WEBSOCKET_KEY2']
+          request['Sec-WebSocket-Protocol'] = env['HTTP_SEC_WEBSOCKET_PROTOCOL']
+          
+          env.each do |key, value|
+            if key.match(/HTTP_(.+)/)
+              request[$1.capitalize.gsub('_','-')] ||= value
+            end
+          end
+          
+          request
         end
 
       end

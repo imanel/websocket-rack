@@ -13,9 +13,8 @@ Gem::Specification.new do |s|
   s.description = %q{Rack-based WebSocket server}
 
   s.add_dependency 'rack'
-  s.add_dependency 'addressable', '>= 2.1.1'
-  s.add_dependency 'eventmachine', '>= 0.12.9'
-  s.add_dependency 'thin'
+  s.add_dependency 'em-websocket', '>= 0.2.1'
+  s.add_dependency 'thin' # Temporary until we support more servers
   s.add_development_dependency 'rspec', '~> 2.4.0'
 
   s.files         = `git ls-files`.split("\n")

@@ -2,62 +2,53 @@ module Rack
   module WebSocket
     module Handler
       class Thin
-        class HandlerFactory
+        class HandlerFactory < ::EventMachine::WebSocket::HandlerFactory
 
-          def self.build(connection, data, debug = false)
-            request = Rack::Request.new(data)
-
-            unless request.env['rack.input'].nil?
-              request.env['rack.input'].rewind
-              remains = request.env['rack.input'].read
-            else
-              # The whole header has not been received yet.
-              return nil
-            end
-
-            unless request.get?
-              raise HandshakeError, "Must be GET request"
-            end
-
-            version = request.env['HTTP_SEC_WEBSOCKET_KEY1'] ? 76 : 75
+          # Bottom half of em-websocket HandlerFactory
+          # Taken from http://github.com/dj2/em-websocket
+          # This method is also used in experimental branch of Goliath
+          def self.build_with_request(connection, request, remains, secure = false, debug = false)
+            version = request['Sec-WebSocket-Key1'] ? 76 : 75
             case version
             when 75
               if !remains.empty?
-                raise HandshakeError, "Extra bytes after header"
+                raise ::EventMachine::WebSocket::HandshakeError, "Extra bytes after header"
               end
             when 76
               if remains.length < 8
                 # The whole third-key has not been received yet.
                 return nil
               elsif remains.length > 8
-                raise HandshakeError, "Extra bytes after third key"
+                raise ::EventMachine::WebSocket::HandshakeError, "Extra bytes after third key"
               end
-              request.env['HTTP_THIRD_KEY'] = remains
+              request['Third-Key'] = remains
             else
-              raise WebSocketError, "Must not happen"
+              raise ::EventMachine::WebSocket::WebSocketError, "Must not happen"
             end
 
-            unless request.env['HTTP_CONNECTION'] == 'Upgrade' and request.env['HTTP_UPGRADE'] == 'WebSocket'
-              raise HandshakeError, "Connection and Upgrade headers required"
+            unless request['Connection'] == 'Upgrade' and request['Upgrade'] == 'WebSocket'
+              raise ::EventMachine::WebSocket::HandshakeError, "Connection and Upgrade headers required"
             end
 
             # transform headers
-            request.env['rack.url_scheme'] = (request.scheme == 'https' ? "wss" : "ws")
+            protocol = (secure ? "wss" : "ws")
+            request['Host'] = Addressable::URI.parse("#{protocol}://"+request['Host'])
 
-            if version = request.env['HTTP_SEC_WEBSOCKET_DRAFT']
+            if version = request['Sec-WebSocket-Draft']
               if version == '1' || version == '2' || version == '3'
                 # We'll use handler03 - I believe they're all compatible
-                Handler03.new(connection, request, debug)
+                ::EventMachine::WebSocket::Handler03.new(connection, request, debug)
               else
                 # According to spec should abort the connection
-                raise WebSocketError, "Unknown draft version: #{version}"
+                raise ::EventMachine::WebSocket::WebSocketError, "Unknown draft version: #{version}"
               end
-            elsif request.env['HTTP_SEC_WEBSOCKET_KEY1']
-              Handler76.new(connection, request, debug)
+            elsif request['Sec-WebSocket-Key1']
+              ::EventMachine::WebSocket::Handler76.new(connection, request, debug)
             else
-              Handler75.new(connection, request, debug)
+              ::EventMachine::WebSocket::Handler75.new(connection, request, debug)
             end
           end
+
         end
       end
     end

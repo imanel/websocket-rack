@@ -10,7 +10,7 @@ module Rack
 
         def initialize(parent, options = {})
           @parent = parent
-          @options = options[:backend]
+          @options = options[:backend] || {}
         end
 
         def call(env)

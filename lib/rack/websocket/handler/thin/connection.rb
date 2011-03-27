@@ -5,13 +5,14 @@ module Rack
     module Handler
       class Thin
         class Connection
-          include Debugger
+          include ::EventMachine::WebSocket::Debugger
 
           def initialize(app, socket, options = {})
             @app = app
             @socket = socket
             @options = options
             @debug = options[:debug] || false
+            @ssl = @socket.backend.respond_to?(:ssl?) && @socket.backend.ssl?
 
             socket.websocket = self
             socket.comm_inactivity_timeout = 0
@@ -66,9 +67,9 @@ module Rack
             @handler.unbind if @handler
           end
 
-          def dispatch(data)
-            debug [:inbound_headers, data.inspect] if @debug
-            @handler = HandlerFactory.build(self, data, @debug)
+          def dispatch(request)
+            debug [:inbound_headers, request]
+            @handler = HandlerFactory.build_with_request(self, request, request['body'], @ssl, @debug)
             unless @handler
               # The whole header has not been received yet.
               return false
