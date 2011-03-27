@@ -3,6 +3,7 @@ module Rack
     module Handler
       
       autoload :Base, "#{ROOT_PATH}/websocket/handler/base"
+      autoload :Stub, "#{ROOT_PATH}/websocket/handler/stub"
       autoload :Thin, "#{ROOT_PATH}/websocket/handler/thin"
       
       def self.detect(env)
@@ -10,7 +11,7 @@ module Rack
         if server_software.match(/\Athin /i)
           Thin
         else
-          nil # TODO: stub handler
+          Stub
         end
       end
       
