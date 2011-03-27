@@ -29,5 +29,5 @@ map '/' do
 end
 
 map '/websocket' do
-  run MyApp.new # :websocket_debug => true
+  run MyApp.new # :backend => { :debug => true }
 end
