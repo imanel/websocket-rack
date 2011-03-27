@@ -12,7 +12,7 @@ Create sample rack config file, and inside build app basing on Rack::WebSocket::
     end
 
     map '/' do
-      run MyApp
+      run MyApp.new
     end
 
 After that just run Rack config from Rack server:
@@ -25,50 +25,50 @@ Done.
 
 Rack::WebSocket::Application make following methods available:
 
-### on_open
+### on_open(env)
 
-Called after client is connected.
+Called after client is connected. Rack env of client is passed as attribute.
 
 Example:
 
     class MyApp < Rack::WebSocket::Application
-      def on_open
+      def on_open(env)
         puts "Clien connected"
       end
     end
 
-### on_close
+### on_close(env)
 
-Called after client is disconnected
+Called after client is disconnected. Rack env of client is passed as attribute.
 
 Example:
 
     class MyApp < Rack::WebSocket::Application
-      def on_close
+      def on_close(env)
         puts "Clien disconnected"
       end
     end
 
-### on_message(msg)
+### on_message(env, msg)
 
-Called after server receive message
+Called after server receive message. Rack env of client is passed as attribute.
 
 Example:
 
     class MyApp < Rack::WebSocket::Application
-      def on_message(msg)
+      def on_message(env, msg)
         puts "Received message: " + msg
       end
     end
 
-### on_error(error)
+### on_error(env, error)
 
 Called after server catch error. Variable passed is instance of Ruby Exception class.
 
 Example:
 
     class MyApp < Rack::WebSocket::Application
-      def on_error(error)
+      def on_error(env, error)
         puts "Error occured: " + error.message
       end
     end
@@ -80,34 +80,50 @@ Sends data do client.
 Example:
 
     class MyApp < Rack::WebSocket::Application
-      def on_open
+      def on_open(env)
         send_data "Hello to you!"
+      end
+    end
+
+### close_websocket
+
+Closes connection.
+
+Example:
+
+    class MyApp < Rack::WebSocket::Application
+      def on_open(env)
+        close_websocket if env['REQUEST_PATH'] != '/websocket'
       end
     end
 
 ## Available variables:
 
-### @env
+### @options
 
-Rack env - contain all data sent by client when connectind.
+Options passed to app on initialize.
 
-### @conn
+Example:
 
-Connection - thin wrapper between client and EventMachine::Connection
+    # In config.ru
+    map '/' do
+      run MyApp.new :some => :variable
+    end
+    
+    # In application instance
+    @options # => { :some => :variable }
 
 ## FAQ
 
 ### Which Rack servers are supported?
 
-Currently only Thin. I plan to support also Rainbows! in future, but not yet.
+Currently we are supporting following servers:
 
-### Why (using Thin) user is disconnected after 30 seconds?
-
-This is bug in EventMachine < 1.0.0. Please consider updating to newer version or use thin-websocket wrapper around thin binary.
+- Thin
 
 ### How to enable debugging?
 
-Just use :websocket\_debug => true option when initializing your app.
+Just use :backend => { :debug => true } option when initializing your app.
 
 ### How to enable wss/SSL support?
 
@@ -117,10 +133,12 @@ Thin v1.2.8 have --ssl option - just use that! :)
 
 Check [Thin](http://code.macournoyer.com/thin/) config - any option supported by Thin(like demonizing, SSL etc.) is supported by WebSocket-Rack.
 
+### Why (using Thin) user is disconnected after 30 seconds?
+
+This is bug in EventMachine < 1.0.0. Please consider updating to newer version or use thin-websocket wrapper around thin binary.
+
 ## About
 
 Author: Bernard Potocki <<bernard.potocki@imanel.org>>
-
-Most source taken from [em-websocket](http://github.com/igrigorik/em-websocket)
 
 Released under MIT license.
