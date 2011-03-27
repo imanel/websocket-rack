@@ -32,7 +32,7 @@ module Rack
         end
 
         def failure_response
-          [ 400, { "Content-Type" => "text/plain" }, [ 'invalid data' ] ]
+          [ 400, {}, [ 'Bad request' ] ]
         end
 
       end

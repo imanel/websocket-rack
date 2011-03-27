@@ -4,26 +4,13 @@ module Rack
   module WebSocket
     module Handler
       class Thin
-        class Connection
-          include ::EventMachine::WebSocket::Debugger
+        class Connection < ::EventMachine::WebSocket::Connection
 
-          def initialize(app, socket, options = {})
-            @app = app
-            @socket = socket
-            @options = options
-            @debug = options[:debug] || false
-            @ssl = @socket.backend.respond_to?(:ssl?) && @socket.backend.ssl?
-
-            socket.websocket = self
-            socket.comm_inactivity_timeout = 0
-
-            if socket.comm_inactivity_timeout != 0
-              puts "WARNING: You are using old EventMachine version. " +
-                   "Please consider updating to EM version >= 1.0.0 " +
-                   "or running Thin using thin-websocket."
-            end
-
-            debug [:initialize]
+          # Overwrite new from EventMachine
+          def self.new(*args)
+            instance = allocate
+            instance.__send__(:initialize, *args)
+            instance
           end
 
           def trigger_on_message(msg)
@@ -39,32 +26,23 @@ module Rack
             @app.on_error(error)
           end
 
-          def method_missing(sym, *args, &block)
-            @socket.send sym, *args, &block
-          end
+          def initialize(app, socket, options = {})
+            @app = app
+            @socket = socket
+            @options = options
+            @debug = options[:debug] || false
+            @ssl = socket.backend.respond_to?(:ssl?) && socket.backend.ssl?
 
-          # Use this method to close the websocket connection cleanly
-          # This sends a close frame and waits for acknowlegement before closing
-          # the connection
-          def close_websocket
-            if @handler
-              @handler.close_websocket
-            else
-              # The handshake hasn't completed - should be safe to terminate
-              close_connection
+            socket.websocket = self
+            socket.comm_inactivity_timeout = 0
+
+            if socket.comm_inactivity_timeout != 0
+              puts "WARNING: You are using old EventMachine version. " +
+                   "Please consider updating to EM version >= 1.0.0 " +
+                   "or running Thin using thin-websocket."
             end
-          end
 
-          def receive_data(data)
-            debug [:receive_data, data]
-
-            @handler.receive_data(data)
-          end
-
-          def unbind
-            debug [:unbind, :connection]
-
-            @handler.unbind if @handler
+            debug [:initialize]
           end
 
           def dispatch(request)
@@ -88,28 +66,21 @@ module Rack
             close_connection_after_writing
           end
 
-          def send(data)
-            debug [:send, data]
-
-            if @handler
-              @handler.send_text_frame(data)
-            else
-              raise WebSocketError, "Cannot send data before onopen callback"
-            end
-          end
-
           def close_with_error(message)
             trigger_on_error(message)
             close_connection_after_writing
           end
 
-          def request
-            @handler ? @handler.request : {}
+          # Overwrite send_data from EventMachine
+          def send_data(*args)
+            @socket.send_data(*args)
           end
 
-          def state
-            @handler ? @handler.state : :handshake
+          # Overwrite close_connection from EventMachine
+          def close_connection(*args)
+            @socket.close_connection(*args)
           end
+
         end
       end
     end
