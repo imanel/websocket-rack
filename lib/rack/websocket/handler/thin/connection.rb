@@ -46,6 +46,7 @@ module Rack
           end
 
           def dispatch(request)
+            return false if request.nil?
             debug [:inbound_headers, request]
             @handler = HandlerFactory.build_with_request(self, request, request['body'], @ssl, @debug)
             unless @handler
