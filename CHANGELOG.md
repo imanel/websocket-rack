@@ -1,5 +1,12 @@
 # Changelog
 
+## Edge
+
+- prepare for supporting server other that thin
+- small changes of API
+- change handling backend options
+- depend on em-websocket instead of copying source
+
 ## 0.1.4 / 2011-03-13
 
 - performance improvements thanks to rbtrace
