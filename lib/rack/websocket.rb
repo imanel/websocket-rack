@@ -3,7 +3,6 @@ require 'em-websocket'
 
 module Rack
   module WebSocket
-    VERSION = "0.1.4"
     ROOT_PATH = ::File.expand_path(::File.dirname(__FILE__))
 
     autoload :Application, "#{ROOT_PATH}/websocket/application"
