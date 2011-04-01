@@ -13,27 +13,7 @@ describe 'Thin handler' do
     ::Thin::Connection.include?(::Rack::WebSocket::Extensions::Thin::Connection).should be_true
   end
   
-  it "should return flash policy file" do
-    conn = new_server_connection
-    conn.write(flash_policy_request)
-    conn.read(flash_policy_response.length).should eql(flash_policy_response)
-  end
-  
-  context 'draft75:' do
-    let(:handshake_request)  { spec75_handshake_request }
-    let(:handshake_response) { spec75_handshake_response }
-    let(:message)            { spec75_message }
-    
-    it_should_behave_like 'all drafts'
-  end
-  
-  context 'draft76:' do
-    let(:handshake_request)  { spec76_handshake_request }
-    let(:handshake_response) { spec76_handshake_response }
-    let(:message)            { spec76_message }
-    
-    it_should_behave_like 'all drafts'
-  end
+  it_should_behave_like 'all handlers'
 end
 
 def start_thin_server(app, options = {})

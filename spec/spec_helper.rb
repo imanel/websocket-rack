@@ -12,3 +12,7 @@ class TestApp < Rack::WebSocket::Application
 end
 
 TEST_PORT = 8081
+
+def new_server_connection
+  TCPSocket.new('localhost', TEST_PORT)
+end
