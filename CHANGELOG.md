@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1 / 2011-04-01
+
+- bugfix: env passed to callbacks should be valid now
+
 ## 0.2.0 / 2011-04-01
 
 - prepare for supporting server other that thin
