@@ -9,6 +9,7 @@ module Rack
         autoload :HandlerFactory, "#{ROOT_PATH}/websocket/handler/thin/handler_factory"
 
         def call(env)
+          @env = env
           socket = env['async.connection']
           request = request_from_env(env)
           @conn = Connection.new(self, socket, :debug => @options[:debug])
