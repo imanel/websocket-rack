@@ -1,5 +1,9 @@
 # Changelog
 
+## Edge
+
+- update to em-websocket 0.3
+
 ## 0.2.1 / 2011-04-01
 
 - bugfix: env passed to callbacks should be valid now
