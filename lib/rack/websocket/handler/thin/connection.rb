@@ -24,6 +24,7 @@ module Rack
           end
           def trigger_on_error(error)
             @app.on_error(error)
+            true
           end
 
           def initialize(app, socket, options = {})
@@ -45,31 +46,16 @@ module Rack
             debug [:initialize]
           end
 
-          def dispatch(request)
-            return false if request.nil?
-            debug [:inbound_headers, request]
-            @handler = HandlerFactory.build_with_request(self, request, request['body'], @ssl, @debug)
+          def dispatch(data)
+            return false if data.nil?
+            debug [:inbound_headers, data]
+            @handler = HandlerFactory.build_with_request(self, data, data['Body'], @ssl, @debug)
             unless @handler
               # The whole header has not been received yet.
               return false
             end
             @handler.run
             return true
-          rescue => e
-            debug [:error, e]
-            process_bad_request(e)
-            return false
-          end
-
-          def process_bad_request(reason)
-            trigger_on_error(reason)
-            send_data "HTTP/1.1 400 Bad request\r\n\r\n"
-            close_connection_after_writing
-          end
-
-          def close_with_error(message)
-            trigger_on_error(message)
-            close_connection_after_writing
           end
 
           # Overwrite send_data from EventMachine

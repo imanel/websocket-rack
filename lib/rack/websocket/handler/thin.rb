@@ -6,7 +6,6 @@ module Rack
       class Thin < Base
 
         autoload :Connection,     "#{ROOT_PATH}/websocket/handler/thin/connection"
-        autoload :HandlerFactory, "#{ROOT_PATH}/websocket/handler/thin/handler_factory"
 
         def call(env)
           @env = env
@@ -36,19 +35,14 @@ module Rack
         
         def request_from_env(env)
           request = {}
-          request['Path']   = env['REQUEST_PATH'].to_s
-          request['Method'] = env['REQUEST_METHOD']
-          request['Query']  = env['QUERY_STRING'].to_s
-          request['body']   = env['rack.input'].read
-          
-          request['Sec-WebSocket-Draft']    = env['HTTP_SEC_WEBSOCKET_DRAFT']
-          request['Sec-WebSocket-Key1']     = env['HTTP_SEC_WEBSOCKET_KEY1']
-          request['Sec-WebSocket-Key2']     = env['HTTP_SEC_WEBSOCKET_KEY2']
-          request['Sec-WebSocket-Protocol'] = env['HTTP_SEC_WEBSOCKET_PROTOCOL']
+          request['path']   = env['REQUEST_PATH'].to_s
+          request['method'] = env['REQUEST_METHOD']
+          request['query']  = env['QUERY_STRING'].to_s
+          request['Body']   = env['rack.input'].read
           
           env.each do |key, value|
             if key.match(/HTTP_(.+)/)
-              request[$1.capitalize.gsub('_','-')] ||= value
+              request[$1.downcase.gsub('_','-')] ||= value
             end
           end
           
