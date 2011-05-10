@@ -1,8 +1,10 @@
 # Changelog
 
-## Edge
+## 0.3.0 / 2011-05-10
 
-- update to em-websocket 0.3
+- support for WebSocket drafts 05 and 06
+- fix tests in Ruby 1.9.2
+- better documentation
 
 ## 0.2.1 / 2011-04-01
 
