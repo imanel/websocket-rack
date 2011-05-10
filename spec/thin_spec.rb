@@ -30,6 +30,7 @@ def stop_thin_server
   sleep 0.1
   @server.stop!
   @thread.kill
+  sleep 0.1
   raise "Reactor still running, wtf?" if EventMachine.reactor_running?
 end
 
