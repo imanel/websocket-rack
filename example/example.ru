@@ -1,4 +1,4 @@
-require 'lib/rack/websocket'
+require './lib/rack/websocket'
 
 class MyApp < Rack::WebSocket::Application
   def on_open(env)
