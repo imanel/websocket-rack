@@ -6,27 +6,44 @@ module Rack
       class Base
         class Connection < ::EventMachine::WebSocket::Connection
 
+          #########################
+          ### EventMachine part ###
+          #########################
+
           # Overwrite new from EventMachine
+          # we need to skip standard procedure called
+          # when socket is created - this is just a stub
           def self.new(*args)
             instance = allocate
             instance.__send__(:initialize, *args)
             instance
           end
 
-          def trigger_on_message(msg)
-            @app.on_message(msg)
-          end
-          def trigger_on_open
-            @app.on_open
-          end
-          def trigger_on_close
-            @app.on_close
-          end
-          def trigger_on_error(error)
-            @app.on_error(error)
-            true
+          # Overwrite send_data from EventMachine
+          # delegate send_data to rack server
+          def send_data(*args)
+            @socket.send_data(*args)
           end
 
+          # Overwrite close_connection from EventMachine
+          # delegate close_connection to rack server
+          def close_connection(*args)
+            @socket.close_connection(*args)
+          end
+
+          #########################
+          ### EM-WebSocket part ###
+          #########################
+
+          # Overwrite triggers from em-websocket
+          def trigger_on_message(msg); @app.on_message(msg); end
+          def trigger_on_open; @app.on_open; end
+          def trigger_on_close; @app.on_close; end
+          def trigger_on_error(error); @app.on_error(error); true; end
+
+          # Overwrite initialize from em-websocket
+          # set all standard options and disable
+          # EM connection inactivity timeout
           def initialize(app, socket, options = {})
             @app = app
             @socket = socket
@@ -46,6 +63,9 @@ module Rack
             debug [:initialize]
           end
 
+          # Overwrite dispath from em-websocket
+          # we already have request headers parsed so
+          # we can skip it and call build_with_request
           def dispatch(data)
             return false if data.nil?
             debug [:inbound_headers, data]
@@ -56,16 +76,6 @@ module Rack
             end
             @handler.run
             return true
-          end
-
-          # Overwrite send_data from EventMachine
-          def send_data(*args)
-            @socket.send_data(*args)
-          end
-
-          # Overwrite close_connection from EventMachine
-          def close_connection(*args)
-            @socket.close_connection(*args)
           end
 
         end
