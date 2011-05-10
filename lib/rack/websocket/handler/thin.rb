@@ -10,14 +10,14 @@ module Rack
           @env = env
           socket = env['async.connection']
           request = request_from_env(env)
-          @conn = Connection.new(self, socket, :debug => @options[:debug])
-          @conn.dispatch(request) ? async_response : failure_response
+          @connection = Connection.new(self, socket, :debug => @options[:debug])
+          @connection.dispatch(request) ? async_response : failure_response
         end
 
         # Forward send_data to server
         def send_data(data)
-          if @conn
-            @conn.send data
+          if @connection
+            @connection.send data
           else
             raise WebSocketError, "WebSocket not opened"
           end
@@ -25,8 +25,8 @@ module Rack
 
         # Forward close_websocket to server
         def close_websocket
-          if @conn
-            @conn.close_websocket
+          if @connection
+            @connection.close_websocket
           else
             raise WebSocketError, "WebSocket not opened"
           end
