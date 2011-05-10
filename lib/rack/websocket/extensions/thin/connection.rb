@@ -11,6 +11,7 @@ module Rack
             end
           end
 
+          # Set 'async.connection' Rack env
           def pre_process_with_websocket
             @request.env['async.connection'] = self
             pre_process_without_websocket

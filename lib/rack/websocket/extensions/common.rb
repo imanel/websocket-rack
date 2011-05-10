@@ -18,10 +18,13 @@ module Rack
 
         attr_accessor :websocket
 
+        # Is this connection WebSocket?
         def websocket?
           !self.websocket.nil?
         end
 
+        # Skip default receive_data if this is
+        # WebSocket connection
         def receive_data_with_websocket(data)
           if self.websocket?
             self.websocket.receive_data(data)
@@ -30,6 +33,8 @@ module Rack
           end
         end
 
+        # Skip standard unbind it this is
+        # WebSocket connection
         def unbind_with_websocket
           if self.websocket?
             self.websocket.unbind
@@ -38,6 +43,7 @@ module Rack
           end
         end
 
+        # Send flash policy file if requested
         def receive_data_with_flash_policy_file(data)
           # thin require data to be proper http request - in it's not
           # then @request.parse raises exception and data isn't parsed

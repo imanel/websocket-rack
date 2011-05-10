@@ -5,6 +5,7 @@ module Rack
     module Handler
       class Thin < Base
 
+        # Build request from Rack env
         def call(env)
           @env = env
           socket = env['async.connection']
@@ -13,6 +14,7 @@ module Rack
           @conn.dispatch(request) ? async_response : failure_response
         end
 
+        # Forward send_data to server
         def send_data(data)
           if @conn
             @conn.send data
@@ -21,6 +23,7 @@ module Rack
           end
         end
 
+        # Forward close_websocket to server
         def close_websocket
           if @conn
             @conn.close_websocket
@@ -28,9 +31,11 @@ module Rack
             raise WebSocketError, "WebSocket not opened"
           end
         end
-        
+
         private
-        
+
+        # Parse Rack env to em-websocket-compatible format
+        # this probably should be moved to Base in future
         def request_from_env(env)
           request = {}
           request['path']   = env['REQUEST_PATH'].to_s
