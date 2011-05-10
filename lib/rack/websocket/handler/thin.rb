@@ -5,8 +5,6 @@ module Rack
     module Handler
       class Thin < Base
 
-        autoload :Connection,     "#{ROOT_PATH}/websocket/handler/thin/connection"
-
         def call(env)
           @env = env
           socket = env['async.connection']

@@ -3,7 +3,7 @@ require 'addressable/uri'
 module Rack
   module WebSocket
     module Handler
-      class Thin
+      class Base
         class Connection < ::EventMachine::WebSocket::Connection
 
           # Overwrite new from EventMachine
