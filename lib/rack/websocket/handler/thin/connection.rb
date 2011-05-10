@@ -49,7 +49,7 @@ module Rack
           def dispatch(data)
             return false if data.nil?
             debug [:inbound_headers, data]
-            @handler = HandlerFactory.build_with_request(self, data, data['Body'], @ssl, @debug)
+            @handler = EventMachine::WebSocket::HandlerFactory.build_with_request(self, data, data['Body'], @ssl, @debug)
             unless @handler
               # The whole header has not been received yet.
               return false
