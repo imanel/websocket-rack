@@ -34,7 +34,7 @@ shared_examples_for 'all drafts' do
     conn.write(message)
   end
   it "should call 'on_message' on connection sending data with proper env and message" do
-    TestApp.any_instance.expects(:on_message).once.with { |env, message| env.class == Hash && !env.keys.empty? && message == 'some message' }
+    TestApp.any_instance.expects(:on_message).once.with { |env, message| env.class == Hash && !env.keys.empty? && message == 'Hello' }
     conn = new_server_connection
     conn.write(handshake_request)
     conn.read(handshake_response.length)
