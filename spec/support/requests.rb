@@ -8,7 +8,7 @@ end
 
 def spec75_handshake_request
   <<-EOF
-GET / HTTP/1.1\r
+GET /demo HTTP/1.1\r
 Upgrade: WebSocket\r
 Connection: Upgrade\r
 Host: localhost:#{TEST_PORT}\r
@@ -23,7 +23,7 @@ HTTP/1.1 101 Web Socket Protocol Handshake\r
 Upgrade: WebSocket\r
 Connection: Upgrade\r
 WebSocket-Origin: http://localhost:#{TEST_PORT}\r
-WebSocket-Location: ws://localhost:#{TEST_PORT}/\r
+WebSocket-Location: ws://localhost:#{TEST_PORT}/demo\r
 \r
 EOF
 end
@@ -34,15 +34,16 @@ end
 
 def spec76_handshake_request
   request = <<-EOF
-GET / HTTP/1.1\r
-Upgrade: WebSocket\r
-Connection: Upgrade\r
+GET /demo HTTP/1.1\r
 Host: localhost:#{TEST_PORT}\r
+Connection: Upgrade\r
+Sec-WebSocket-Key2: 12998 5 Y3 1  .P00\r
+Sec-WebSocket-Protocol: sample\r
+Upgrade: WebSocket\r
+Sec-WebSocket-Key1: 4 @1  46546xW%0l 1 5\r
 Origin: http://localhost:#{TEST_PORT}\r
-Sec-WebSocket-Key1: 18x 6]8vM;54 *(5:  {   U1]8  z [  8\r
-Sec-WebSocket-Key2: 1_ tx7X d  <  nw  334J702) 7]o}` 0\r
 \r
-Tm[K T2u
+^n:ds[4U
 EOF
   request.rstrip
 end
@@ -52,10 +53,11 @@ def spec76_handshake_response
 HTTP/1.1 101 WebSocket Protocol Handshake\r
 Upgrade: WebSocket\r
 Connection: Upgrade\r
-Sec-WebSocket-Location: ws://localhost:#{TEST_PORT}/\r
+Sec-WebSocket-Location: ws://localhost:#{TEST_PORT}/demo\r
 Sec-WebSocket-Origin: http://localhost:#{TEST_PORT}\r
+Sec-WebSocket-Protocol: sample\r
 \r
-fQJ,fN/4F4!~K~MH
+8jKS'y:G*Co,Wxa-
 EOF
   response.rstrip
 end
@@ -66,17 +68,17 @@ end
 
 def spec03_handshake_request
   request = <<-EOF
-GET / HTTP/1.1\r
-Upgrade: WebSocket\r
-Connection: Upgrade\r
+GET /demo HTTP/1.1\r
 Host: localhost:#{TEST_PORT}\r
-Origin: http://localhost:#{TEST_PORT}\r
-Sec-WebSocket-Key1: 18x 6]8vM;54 *(5:  {   U1]8  z [  8\r
-Sec-WebSocket-Key2: 1_ tx7X d  <  nw  334J702) 7]o}` 0\r
+Connection: Upgrade\r
+Sec-WebSocket-Key2: 12998 5 Y3 1  .P00\r
 Sec-WebSocket-Protocol: sample\r
+Upgrade: WebSocket\r
+Sec-WebSocket-Key1: 4 @1  46546xW%0l 1 5\r
+Origin: http://localhost:#{TEST_PORT}\r
 Sec-WebSocket-Draft: 3\r
 \r
-Tm[K T2u
+^n:ds[4U
 EOF
   request.rstrip
 end
@@ -86,11 +88,11 @@ def spec03_handshake_response
 HTTP/1.1 101 WebSocket Protocol Handshake\r
 Upgrade: WebSocket\r
 Connection: Upgrade\r
-Sec-WebSocket-Location: ws://localhost:#{TEST_PORT}/\r
+Sec-WebSocket-Location: ws://localhost:#{TEST_PORT}/demo\r
 Sec-WebSocket-Origin: http://localhost:#{TEST_PORT}\r
 Sec-WebSocket-Protocol: sample\r
 \r
-fQJ,fN/4F4!~K~MH
+8jKS'y:G*Co,Wxa-
 EOF
   response.rstrip
 end
@@ -101,13 +103,13 @@ end
 
 def spec05_handshake_request
   <<-EOF
-GET / HTTP/1.1\r
+GET /chat HTTP/1.1\r
+Host: localhost:#{TEST_PORT}\r
 Upgrade: websocket\r
 Connection: Upgrade\r
-Host: localhost:#{TEST_PORT}\r
-Sec-WebSocket-Origin: http://localhost:#{TEST_PORT}\r
 Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r
-Sec-WebSocket-Protocol: sample\r
+Sec-WebSocket-Origin: http://localhost:#{TEST_PORT}\r
+Sec-WebSocket-Protocol: chat, superchat\r
 Sec-WebSocket-Version: 5\r
 \r
 EOF
@@ -128,13 +130,13 @@ end
 
 def spec06_handshake_request
   <<-EOF
-GET / HTTP/1.1\r
+GET /chat HTTP/1.1\r
+Host: localhost:#{TEST_PORT}\r
 Upgrade: websocket\r
 Connection: Upgrade\r
-Host: localhost:#{TEST_PORT}\r
-Sec-WebSocket-Origin: http://localhost:#{TEST_PORT}\r
 Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r
-Sec-WebSocket-Protocol: sample\r
+Sec-WebSocket-Origin: http://localhost:#{TEST_PORT}\r
+Sec-WebSocket-Protocol: chat, superchat\r
 Sec-WebSocket-Version: 6\r
 \r
 EOF
