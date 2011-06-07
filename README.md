@@ -162,6 +162,10 @@ end
 
 ## FAQ
 
+### Which WebSocket drafts are supported:
+
+Currently we support drafts -75 and -76 form old(hixie) numeration and all drafts from -00 to -06 from current(ietf-hybi) numeration.
+
 ### Which Rack servers are supported?
 
 Currently we are supporting following servers:
