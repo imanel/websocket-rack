@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1 / 2011-07-29
+
+- support for WebSocket drafts 07 and 08
+
 ## 0.3.0 / 2011-05-10
 
 - support for WebSocket drafts 05 and 06
