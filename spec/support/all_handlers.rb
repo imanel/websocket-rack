@@ -46,4 +46,24 @@ shared_examples_for 'all handlers' do
     
     it_should_behave_like 'all drafts'
   end
+  
+  context 'for draft07' do
+    let(:handshake_request)  { spec07_handshake_request }
+    let(:handshake_response) { spec07_handshake_response }
+    let(:message)            { spec07_unmasked_message }
+    let(:masked_message)     { spec07_masked_message }
+    
+    it_should_behave_like 'all drafts'
+    it_should_behave_like 'draft with masked messages'
+  end
+  
+  context 'for draft08' do
+    let(:handshake_request)  { spec08_handshake_request }
+    let(:handshake_response) { spec08_handshake_response }
+    let(:message)            { spec08_unmasked_message }
+    let(:masked_message)     { spec08_masked_message }
+    
+    it_should_behave_like 'all drafts'
+    it_should_behave_like 'draft with masked messages'
+  end
 end
