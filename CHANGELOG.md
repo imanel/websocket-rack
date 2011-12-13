@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.2 / 2011-12-13
+
+- fix bug that resulted in 'location mismatch' error on Safari and iOS
+
 ## 0.3.1 / 2011-07-29
 
 - support for WebSocket drafts 07 and 08
