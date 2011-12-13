@@ -38,7 +38,7 @@ module Rack
         # this probably should be moved to Base in future
         def request_from_env(env)
           request = {}
-          request['path']   = env['REQUEST_PATH'].to_s
+          request['path']   = env['REQUEST_URI'].to_s
           request['method'] = env['REQUEST_METHOD']
           request['query']  = env['QUERY_STRING'].to_s
           request['Body']   = env['rack.input'].read
