@@ -1,9 +1,10 @@
 # Changelog
 
-## Edge
+## 0.3.3 / 2012-02-16
 
 - postponse sending messages and closing connection to next tick(prevent locking rest of current request)
 - support for WebSocket drafts 09-13 (currently proposed as standard)
+- prevent blocking tests when invalid responsed is received
 
 ## 0.3.2 / 2011-12-13
 
