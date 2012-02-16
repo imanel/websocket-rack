@@ -3,6 +3,7 @@
 ## Edge
 
 - postponse sending messages and closing connection to next tick(prevent locking rest of current request)
+- support for WebSocket drafts 09-13 (currently proposed as standard)
 
 ## 0.3.2 / 2011-12-13
 

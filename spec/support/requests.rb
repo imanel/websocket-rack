@@ -216,3 +216,34 @@ end
 def spec08_masked_message
   "\x81\x85\x37\xfa\x21\x3d\x7f\x9f\x4d\x51\x58"
 end
+
+def spec13_handshake_request
+  <<-EOF
+GET /chat HTTP/1.1\r
+Host: localhost:#{TEST_PORT}\r
+Upgrade: websocket\r
+Connection: Upgrade\r
+Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r
+Origin: http://localhost:#{TEST_PORT}\r
+Sec-WebSocket-Protocol: chat, superchat\r
+Sec-WebSocket-Version: 13\r
+\r
+EOF
+end
+
+def spec13_handshake_response
+  <<-EOF
+HTTP/1.1 101 Switching Protocols\r
+Upgrade: websocket\r
+Connection: Upgrade\r
+Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=\r
+EOF
+end
+
+def spec13_unmasked_message
+  "\x81\x05\x48\x65\x6c\x6c\x6f"
+end
+
+def spec13_masked_message
+  "\x81\x85\x37\xfa\x21\x3d\x7f\x9f\x4d\x51\x58"
+end
