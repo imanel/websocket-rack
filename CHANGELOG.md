@@ -1,5 +1,9 @@
 # Changelog
 
+## Edge
+
+- postponse sending messages and closing connection to next tick(prevent locking rest of current request)
+
 ## 0.3.2 / 2011-12-13
 
 - fix bug that resulted in 'location mismatch' error on Safari and iOS

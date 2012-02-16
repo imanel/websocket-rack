@@ -22,13 +22,17 @@ module Rack
           # Overwrite send_data from EventMachine
           # delegate send_data to rack server
           def send_data(*args)
-            @socket.send_data(*args)
+            EM.next_tick do
+              @socket.send_data(*args)
+            end
           end
 
           # Overwrite close_connection from EventMachine
           # delegate close_connection to rack server
           def close_connection(*args)
-            @socket.close_connection(*args)
+            EM.next_tick do
+              @socket.close_connection(*args)
+            end
           end
 
           #########################
