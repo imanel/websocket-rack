@@ -1,8 +1,9 @@
+require 'timeout'
 shared_examples_for 'all drafts' do
   it "should accept incoming connection" do
     conn = new_server_connection
     conn.write(handshake_request)
-    conn.read(handshake_response.length).should eql(handshake_response)
+    timeout(1) { conn.read(handshake_response.length).should eql(handshake_response) }
   end
   it "should call 'on_open' on new connection" do
     TestApp.any_instance.expects(:on_open)
@@ -30,14 +31,14 @@ shared_examples_for 'all drafts' do
     TestApp.any_instance.expects(:on_message)
     conn = new_server_connection
     conn.write(handshake_request)
-    conn.read(handshake_response.length)
+    timeout(1) { conn.read(handshake_response.length) }
     conn.write(message)
   end
   it "should call 'on_message' on connection sending data with proper env and message" do
     TestApp.any_instance.expects(:on_message).once.with { |env, message| env.class == Hash && !env.keys.empty? && message == 'Hello' }
     conn = new_server_connection
     conn.write(handshake_request)
-    conn.read(handshake_response.length)
+    timeout(1) { conn.read(handshake_response.length) }
     conn.write(message)
   end
 end
