@@ -1,8 +1,9 @@
 # Changelog
 
-## Edge
+## 0.4.0 / 2012-04-16
 
 - require EventMachine ~> 1.0.0.beta.4 (support for old version was to confusing for a lot of users)
+- remove thin-websocket wrapper
 
 ## 0.3.3 / 2012-02-16
 
