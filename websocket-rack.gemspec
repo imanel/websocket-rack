@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'rack'
   s.add_dependency 'em-websocket', '~> 0.3.6'
+  s.add_dependency 'eventmachine', '~> 1.0.0.beta.4'
   s.add_dependency 'thin' # Temporary until we support more servers
   s.add_development_dependency 'rspec', '~> 2.4.0'
   s.add_development_dependency 'mocha'
