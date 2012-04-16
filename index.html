@@ -1,0 +1,241 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Websocket-rack by imanel</title>
+    
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Websocket-rack</h1>
+        <p>WebSocket server basing on Rack</p>
+        <p class="view"><a href="https://github.com/imanel/websocket-rack">View the Project on GitHub <small>imanel/websocket-rack</small></a></p>
+        <ul>
+          <li><a href="https://github.com/imanel/websocket-rack/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/imanel/websocket-rack/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/imanel/websocket-rack">Fork On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h2>Usage</h2>
+
+<p>Create sample rack config file, and inside build app basing on Rack::WebSocket::Application.</p>
+
+<div class="highlight">
+<pre><span class="nb">require</span> <span class="s1">'rack/websocket'</span>
+
+<span class="k">class</span> <span class="nc">MyApp</span> <span class="o">&lt;</span> <span class="no">Rack</span><span class="o">::</span><span class="no">WebSocket</span><span class="o">::</span><span class="no">Application</span>
+<span class="k">end</span>
+
+<span class="n">map</span> <span class="s1">'/'</span> <span class="k">do</span>
+  <span class="n">run</span> <span class="no">MyApp</span><span class="o">.</span><span class="n">new</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<p>After that just run Rack config from Rack server:</p>
+
+<div class="highlight">
+<pre>thin -R config.ru start
+</pre>
+</div>
+
+
+<p>Done.</p>
+
+<h2>Configuration</h2>
+
+<p>Rack::WebSocket::Application make following methods available:</p>
+
+<h3>initialize</h3>
+
+<p>Called once after server is started. This is place for application configuration so each instance variables from here will be available in whole application.</p>
+
+<p>Example:</p>
+
+<div class="highlight">
+<pre><span class="k">class</span> <span class="nc">MyApp</span> <span class="o">&lt;</span> <span class="no">Rack</span><span class="o">::</span><span class="no">WebSocket</span><span class="o">::</span><span class="no">Application</span>
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
+    <span class="k">super</span>
+    <span class="vi">@myvar</span> <span class="o">=</span> <span class="mi">4</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<p>It is important to include 'super' in initialize function, so application will be properly configured.</p>
+
+<p>Please notice that in some servers, when 'initialize' is called, EventMachine reactor is not running yet. If you would like to configure EventMachine-based software, then you need to put it inside 'EM.next_tick' block, so this function will be called in first cycle of reactor.</p>
+
+<p>Example:</p>
+
+<div class="highlight">
+<pre><span class="k">class</span> <span class="nc">MyWebSocket</span> <span class="o">&lt;</span> <span class="no">Rack</span><span class="o">::</span><span class="no">WebSocket</span><span class="o">::</span><span class="no">Application</span>
+  <span class="k">def</span> <span class="nf">initialize</span>
+    <span class="no">EM</span><span class="o">.</span><span class="n">next_tick</span> <span class="p">{</span> <span class="vi">@redis</span> <span class="o">=</span> <span class="no">EM</span><span class="o">::</span><span class="no">Hiredis</span><span class="o">.</span><span class="n">connect</span> <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<h3>on_open(env)</h3>
+
+<p>Called after client is connected. Rack env of client is passed as attribute.</p>
+
+<p>Example:</p>
+
+<div class="highlight">
+<pre><span class="k">class</span> <span class="nc">MyApp</span> <span class="o">&lt;</span> <span class="no">Rack</span><span class="o">::</span><span class="no">WebSocket</span><span class="o">::</span><span class="no">Application</span>
+  <span class="k">def</span> <span class="nf">on_open</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+    <span class="nb">puts</span> <span class="s2">"Clien connected"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<h3>on_close(env)</h3>
+
+<p>Called after client is disconnected. Rack env of client is passed as attribute.</p>
+
+<p>Example:</p>
+
+<div class="highlight">
+<pre><span class="k">class</span> <span class="nc">MyApp</span> <span class="o">&lt;</span> <span class="no">Rack</span><span class="o">::</span><span class="no">WebSocket</span><span class="o">::</span><span class="no">Application</span>
+  <span class="k">def</span> <span class="nf">on_close</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+    <span class="nb">puts</span> <span class="s2">"Clien disconnected"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<h3>on_message(env, msg)</h3>
+
+<p>Called after server receive message. Rack env of client is passed as attribute.</p>
+
+<p>Example:</p>
+
+<div class="highlight">
+<pre><span class="k">class</span> <span class="nc">MyApp</span> <span class="o">&lt;</span> <span class="no">Rack</span><span class="o">::</span><span class="no">WebSocket</span><span class="o">::</span><span class="no">Application</span>
+  <span class="k">def</span> <span class="nf">on_message</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+    <span class="nb">puts</span> <span class="s2">"Received message: "</span> <span class="o">+</span> <span class="n">msg</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<h3>on_error(env, error)</h3>
+
+<p>Called after server catch error. Variable passed is instance of Ruby Exception class.</p>
+
+<p>Example:</p>
+
+<div class="highlight">
+<pre><span class="k">class</span> <span class="nc">MyApp</span> <span class="o">&lt;</span> <span class="no">Rack</span><span class="o">::</span><span class="no">WebSocket</span><span class="o">::</span><span class="no">Application</span>
+  <span class="k">def</span> <span class="nf">on_error</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+    <span class="nb">puts</span> <span class="s2">"Error occured: "</span> <span class="o">+</span> <span class="n">error</span><span class="o">.</span><span class="n">message</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<h3>send_data(data)</h3>
+
+<p>Sends data do client.</p>
+
+<p>Example:</p>
+
+<div class="highlight">
+<pre><span class="k">class</span> <span class="nc">MyApp</span> <span class="o">&lt;</span> <span class="no">Rack</span><span class="o">::</span><span class="no">WebSocket</span><span class="o">::</span><span class="no">Application</span>
+  <span class="k">def</span> <span class="nf">on_open</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+    <span class="n">send_data</span> <span class="s2">"Hello to you!"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<h3>close_websocket</h3>
+
+<p>Closes connection.</p>
+
+<p>Example:</p>
+
+<div class="highlight">
+<pre><span class="k">class</span> <span class="nc">MyApp</span> <span class="o">&lt;</span> <span class="no">Rack</span><span class="o">::</span><span class="no">WebSocket</span><span class="o">::</span><span class="no">Application</span>
+  <span class="k">def</span> <span class="nf">on_open</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+    <span class="n">close_websocket</span> <span class="k">if</span> <span class="n">env</span><span class="o">[</span><span class="s1">'REQUEST_PATH'</span><span class="o">]</span> <span class="o">!=</span> <span class="s1">'/websocket'</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<h2>Available variables:</h2>
+
+<h3><a href="https://github.com/options" class="user-mention">@options</a></h3>
+
+<p>Options passed to app on initialize.</p>
+
+<p>Example:</p>
+
+<div class="highlight">
+<pre><span class="c1"># In config.ru</span>
+<span class="n">map</span> <span class="s1">'/'</span> <span class="k">do</span>
+  <span class="n">run</span> <span class="no">MyApp</span><span class="o">.</span><span class="n">new</span> <span class="ss">:some</span> <span class="o">=&gt;</span> <span class="ss">:variable</span>
+<span class="k">end</span>
+
+<span class="c1"># In application instance</span>
+<span class="vi">@options</span> <span class="c1"># =&gt; { :some =&gt; :variable }</span>
+</pre>
+</div>
+
+
+<h2>FAQ</h2>
+
+<h3>Which WebSocket drafts are supported:</h3>
+
+<p>Currently we support drafts -75 and -76 form old(hixie) numeration and all drafts from -00 to -13 from current(ietf-hybi) numeration.
+Please note that ietf-hybi-13 is currently proposed as final standard.</p>
+
+<h3>Which Rack servers are supported?</h3>
+
+<p>Currently we are supporting following servers:</p>
+
+<ul>
+<li>Thin</li>
+</ul><h3>How to enable debugging?</h3>
+
+<p>Just use :backend =&gt; { :debug =&gt; true } option when initializing your app.</p>
+
+<h3>How to enable wss/SSL support?</h3>
+
+<p>Thin v1.2.8 have --ssl option - just use that! :)</p>
+
+<h3>How to use function xxx?</h3>
+
+<p>Check <a href="http://code.macournoyer.com/thin/">Thin</a> config - any option supported by Thin(like demonizing, SSL etc.) is supported by WebSocket-Rack.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/imanel">imanel</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
