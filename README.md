@@ -185,9 +185,6 @@ Thin v1.2.8 have --ssl option - just use that! :)
 
 Check [Thin](http://code.macournoyer.com/thin/) config - any option supported by Thin(like demonizing, SSL etc.) is supported by WebSocket-Rack.
 
-### Why (using Thin) user is disconnected after 30 seconds?
-
-This is bug in EventMachine < 1.0.0. Please consider updating to newer version or use thin-websocket wrapper around thin binary.
 
 ## About
 
