@@ -58,12 +58,6 @@ module Rack
             socket.websocket = self
             socket.comm_inactivity_timeout = 0
 
-            if socket.comm_inactivity_timeout != 0
-              puts "WARNING: You are using old EventMachine version. " +
-                   "Please consider updating to EM version >= 1.0.0 " +
-                   "or running Thin using thin-websocket."
-            end
-
             debug [:initialize]
           end
 

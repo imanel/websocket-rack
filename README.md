@@ -185,7 +185,6 @@ Thin v1.2.8 have --ssl option - just use that! :)
 
 Check [Thin](http://code.macournoyer.com/thin/) config - any option supported by Thin(like demonizing, SSL etc.) is supported by WebSocket-Rack.
 
-
 ## About
 
 Author: Bernard Potocki <<bernard.potocki@imanel.org>>

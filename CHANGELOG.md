@@ -1,5 +1,9 @@
 # Changelog
 
+## Edge
+
+- require EventMachine ~> 1.0.0.beta.4 (support for old version was to confusing for a lot of users)
+
 ## 0.3.3 / 2012-02-16
 
 - postponse sending messages and closing connection to next tick(prevent locking rest of current request)
