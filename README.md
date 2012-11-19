@@ -1,4 +1,4 @@
-# WebSocket Rack [![](http://travis-ci.org/imanel/websocket-rack.png)](http://travis-ci.org/imanel/websocket-rack)
+# WebSocket Rack [![](https://travis-ci.org/imanel/websocket-rack.png)](http://travis-ci.org/imanel/websocket-rack)
 
 Rack-based WebSocket server
 
