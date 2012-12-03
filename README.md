@@ -1,4 +1,5 @@
-# WebSocket Rack [![](http://travis-ci.org/imanel/websocket-rack.png)](http://travis-ci.org/imanel/websocket-rack)
+# WebSocket Rack
+[![Build Status](https://travis-ci.org/imanel/websocket-rack.png)](http://travis-ci.org/imanel/websocket-rack) [![Dependency Status](https://gemnasium.com/imanel/websocket-rack.png)](http://gemnasium.com/imanel/websocket-rack) [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/imanel/websocket-rack)
 
 Rack-based WebSocket server
 
