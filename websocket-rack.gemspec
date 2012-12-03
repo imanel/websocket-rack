@@ -13,11 +13,9 @@ Gem::Specification.new do |s|
   s.description = %q{Rack-based WebSocket server}
 
   s.add_dependency 'rack'
-  s.add_dependency 'em-websocket', '~> 0.3.6'
-  s.add_dependency 'eventmachine', '~> 1.0.0.beta.4'
+  s.add_dependency 'em-websocket', '~> 0.3.8'
+  s.add_dependency 'eventmachine', '~> 1.0.0'
   s.add_dependency 'thin' # Temporary until we support more servers
-  s.add_development_dependency 'rspec', '~> 2.4.0'
-  s.add_development_dependency 'mocha'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
