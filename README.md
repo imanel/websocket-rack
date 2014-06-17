@@ -191,6 +191,6 @@ Check [Thin](http://code.macournoyer.com/thin/) config - any option supported by
 
 ## About
 
-Author: Bernard Potocki <<bernard.potocki@imanel.org>>
+Author: Bernard Potocki <bernard.potocki@imanel.org>
 
 Released under MIT license.
