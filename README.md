@@ -71,7 +71,7 @@ Example:
 ``` ruby
 class MyApp < Rack::WebSocket::Application
   def on_open(env)
-    puts "Clien connected"
+    puts "Client connected"
   end
 end
 ```
@@ -85,7 +85,7 @@ Example:
 ``` ruby
 class MyApp < Rack::WebSocket::Application
   def on_close(env)
-    puts "Clien disconnected"
+    puts "Client disconnected"
   end
 end
 ```
@@ -183,7 +183,7 @@ Just use :backend => { :debug => true } option when initializing your app.
 
 ### How to enable wss/SSL support?
 
-Thin v1.2.8 have --ssl option - just use that! :)
+Thin v1.2.8 has an --ssl option - just use that! :)
 
 ### How to use function xxx?
 
@@ -191,6 +191,6 @@ Check [Thin](http://code.macournoyer.com/thin/) config - any option supported by
 
 ## About
 
-Author: Bernard Potocki <<bernard.potocki@imanel.org>>
+Author: Bernard Potocki <bernard.potocki@imanel.org>
 
 Released under MIT license.
