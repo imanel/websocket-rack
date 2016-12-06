@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.description = %q{Rack-based WebSocket server}
 
   s.add_dependency 'rack'
-  s.add_dependency 'em-websocket', '~> 0.3.8'
+  s.add_dependency 'em-websocket', '>= 0.3.8'
   s.add_dependency 'eventmachine', '~> 1.0.0'
   s.add_dependency 'thin' # Temporary until we support more servers
 
